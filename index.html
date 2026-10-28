@@ -1,0 +1,1699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- flow-rebuild template (Growth Audit, v3: + walkthrough video, phone view/QR, localization, paywall today vs proposed). Replace every double-brace placeholder, everything between
+     the SCREENS markers, and the CONTENT json. Rules that brand-check.py enforces are marked RULE.
+     Reference builds: eddieatadapty.github.io/datacamp-flow-rebuild-v2 · bterzic123.github.io/planner5d-flow-rebuild-v2 -->
+<title>Formula Growth Audit</title>
+<meta name="description" content="Five ideas to turn more Formula users into subscribers, each built into a clickable version of Formula's own onboarding. Prepared by Adapty.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the APP's font (brand.json fonts, or the closest Google family) + a mono if the app shows code -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* BRAND:START — the only place the APP's colours are written as literals. RULE: every value here is
+   copied from brand.json / a sampled pixel of the app's own screens; never "improved". Used only inside the phone. */
+:root{
+  --b-primary:#f53d61;      /* coral: selected rows, CONTINUE, unit pill (recorded screens) */
+  --b-primary-ink:#ffffff;
+  --b-bg:#fdfcfc;           /* screen ground */
+  --b-surface:#f6f4f5;      /* option rows, plan cards */
+  --b-ink:#0b0a0b;
+  --b-ink2:#9c9a9b;
+  --b-line:#eceaeb;
+  --b-accent2:#fdba4a;      /* review stars */
+  --b-grad:linear-gradient(90deg,#fb5579,#fd9651);  /* pay button */
+  --b-green:#01c17e;        /* results: date, goal flag, checks */
+  --b-border:#f37b61;       /* selected plan border */
+  --b-cream:#fbf1e8;        /* App Store art ground */
+  --b-blush:#fdeee8;
+  --b-radius:12px;
+  --b-pill:999px;
+  --b-font:'Inter',-apple-system,system-ui,sans-serif;
+  --b-mono:ui-monospace,monospace;
+}
+/* BRAND:END */
+/* A second app family (e.g. a mono for code) is applied HERE, never in SCREENS css (brand-check allows only
+   var(--b-font) there). Prefix with .scr so it beats the screens' font shorthands, e.g.:
+   .scr .code,.scr .instr code{font-family:var(--b-mono)} */
+
+/* ================= the audit page — Adapty's, not the app's. Light, Apple-style. ================= */
+:root{
+  color-scheme:light;
+  --st-ground:#f5f5f7; --st-card:#ffffff; --st-ink:#1d1d1f; --st-ink2:#6e6e73; --st-ink3:#86868b;
+  --st-hair:rgba(0,0,0,.09); --st-link:#0066cc;
+  --st-accent:#0c1523;      /* dark brand colour of the APP: buttons, the outcome band */
+  --st-hi:#f53d61;          /* bright brand colour of the APP: outcome numbers on the band, idea dots */
+  --st-mark:rgba(174,254,243,.95); /* --st-hi at ~.5 alpha: the highlighter under impact numbers */
+  --st-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+html,body{margin:0}
+body{background:var(--st-ground);color:var(--st-ink);font-family:var(--st-font);-webkit-font-smoothing:antialiased;font-size:17px;line-height:1.47}
+.au-wrap{max-width:1080px;margin:0 auto;padding-inline:22px}
+a{color:var(--st-link)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--st-link);outline-offset:3px;border-radius:6px}
+mark{background:linear-gradient(transparent 62%,var(--st-mark) 62%,var(--st-mark) 92%,transparent 92%);color:inherit;padding:0 .04em}
+
+/* nav */
+.au-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--st-hair)}
+.au-nav-in{max-width:1080px;margin:0 auto;padding-inline:22px;height:52px;display:flex;align-items:center;gap:26px}
+.au-brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.au-brand img{width:26px;height:26px;border-radius:7px;flex:none}
+.au-brand span{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.au-brand small{font-size:15px;font-weight:400;color:var(--st-ink2)}
+.au-nav a{font-size:13px;color:var(--st-ink);text-decoration:none;opacity:.82}
+.au-nav a:hover{opacity:1}
+@media (max-width:560px){.au-nav a.au-opt{display:none}.au-brand small{display:none}}
+
+/* hero */
+.au-top-hero{text-align:center;padding-top:clamp(56px,9vw,96px);overflow:hidden;position:relative}
+.au-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--st-ink);margin:0 0 14px}
+.au-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-display{font-size:clamp(60px,12vw,120px);line-height:.98;font-weight:700;letter-spacing:-.05em;margin:0}
+.au-lede{font-size:clamp(23px,3.4vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.022em;max-width:760px;margin:22px auto 0;text-wrap:balance}
+.au-lede span{color:var(--st-ink2)}
+.au-byline{font-size:14px;color:var(--st-ink3);margin:18px 0 0}
+.au-ctas{display:flex;gap:26px;justify-content:center;align-items:center;margin-top:30px;flex-wrap:wrap}
+.au-btn{display:inline-block;background:var(--st-accent);color:#fff;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;text-decoration:none;border:0;cursor:pointer}
+.au-btn:hover{filter:brightness(1.25)}
+.au-lnk{background:none;border:0;padding:0;color:var(--st-link);font-size:17px;text-decoration:none;cursor:pointer}
+.au-lnk::after{content:"\00a0›"}
+.au-lnk:hover{text-decoration:underline}
+.au-phones{display:flex;justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,64px);height:clamp(300px,52vw,560px)}
+.au-hp{flex:none;border:0;padding:0;background:none;cursor:pointer;width:27%;max-width:290px;margin:0 -2.5%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.au-hp img{display:block;width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.2))}
+.au-hp.au-c{width:31%;max-width:330px;z-index:2}
+.au-hp.au-l{transform:translateY(12%) rotate(-5deg)}
+.au-hp.au-r{transform:translateY(12%) rotate(5deg)}
+.au-hp.au-l:hover{transform:translateY(9%) rotate(-5deg)}.au-hp.au-r:hover{transform:translateY(9%) rotate(5deg)}.au-hp.au-c:hover{transform:translateY(-3%)}
+
+/* sections */
+.au-sec{padding-block:clamp(72px,10vw,120px)}
+.au-sec.au-white{background:var(--st-card)}
+.au-kicker{font-size:15px;font-weight:600;color:var(--st-ink2);margin:0 0 12px}
+.au-h2{font-size:clamp(34px,5.2vw,56px);line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.au-h2 span{color:var(--st-ink3)}
+.au-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,80px);align-items:end}
+.au-split p{margin:0;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--st-ink2);letter-spacing:-.01em}
+.au-split p b{color:var(--st-ink);font-weight:600}
+.au-split p + p{margin-top:16px}
+.au-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,80px);border-top:1px solid var(--st-hair)}
+.au-stat{padding:28px 20px 0 0}
+.au-stat b{display:block;font-size:clamp(40px,5.5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.au-stat span{display:block;font-size:15px;color:var(--st-ink2);margin-top:10px;max-width:22ch}
+.au-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:clamp(48px,7vw,72px)}
+.au-note h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 8px}
+.au-note p{margin:0;font-size:15.5px;line-height:1.5;color:var(--st-ink2)}
+.au-note .au-ic{width:36px;height:36px;border-radius:10px;background:var(--st-ground);display:grid;place-items:center;margin-bottom:16px}
+.au-note .au-ic svg{width:19px;height:19px;stroke:var(--st-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ideas */
+.au-ideas-h{margin-bottom:clamp(32px,5vw,48px)}
+.au-list{background:var(--st-card);border-radius:28px;padding-inline:clamp(20px,4vw,44px)}
+.au-idea{display:grid;grid-template-columns:56px 1fr 220px;gap:20px;align-items:start;padding-block:clamp(26px,3.5vw,36px);border-top:1px solid var(--st-hair)}
+.au-idea:first-child{border-top:0}
+.au-idea .au-num{font-size:15px;font-weight:600;color:var(--st-ink3);font-variant-numeric:tabular-nums;padding-top:6px}
+.au-idea h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;font-weight:600;letter-spacing:-.022em;margin:0 0 8px}
+.au-idea p{margin:0 0 12px;font-size:17px;line-height:1.5;color:var(--st-ink2);max-width:58ch}
+.au-idea p code{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st-ink);background:var(--st-ground);padding:2px 7px;border-radius:6px}
+.au-idea .au-lnk{font-size:15px}
+.au-imp{text-align:right}
+.au-imp .au-v{font-size:clamp(30px,3.6vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--st-accent)}
+.au-imp .au-l{font-size:13.5px;color:var(--st-ink2);margin-top:8px}
+.au-band{margin-top:20px;background:var(--st-accent);color:#fff;border-radius:28px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,64px);align-items:center}
+.au-band .au-k{font-size:15px;font-weight:600;color:rgba(255,255,255,.62);margin:0 0 10px}
+.au-band h3{font-size:clamp(24px,3vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.au-band .au-fn{font-size:13px;line-height:1.5;color:rgba(255,255,255,.55);margin:16px 0 0;max-width:52ch}
+.au-nums{display:flex;gap:clamp(28px,4vw,48px)}
+.au-nums small{display:block;font-size:13px;color:rgba(255,255,255,.62)}
+.au-nums b{display:block;font-size:clamp(48px,6.5vw,76px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-hi);font-variant-numeric:tabular-nums;margin:4px 0 8px}
+.au-nums span{font-size:14px;color:rgba(255,255,255,.8)}
+.au-band .au-btn{background:var(--st-hi);color:var(--st-accent);font-weight:600;margin-top:26px}
+
+/* prototype */
+.au-proto-h{text-align:center;max-width:720px;margin:0 auto}
+.au-proto-h p{font-size:clamp(17px,1.7vw,21px);color:var(--st-ink2);margin:14px 0 0}
+.au-seg{display:flex;gap:4px;justify-content:center;margin:clamp(28px,4vw,40px) auto 0;padding:4px;background:var(--st-ground);border-radius:980px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.au-seg::-webkit-scrollbar{display:none}
+.au-chip{flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--st-ink2);font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:980px;cursor:pointer;white-space:nowrap}
+.au-chip:hover{color:var(--st-ink)}
+.au-chip.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.au-chip i{font-style:normal;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--st-hi);color:var(--st-accent)}
+.au-stage{display:grid;grid-template-columns:auto minmax(0,420px);gap:clamp(32px,6vw,72px);justify-content:center;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.phone{width:390px;height:844px;border-radius:56px;padding:10px;background:#0b0d10;box-shadow:0 0 0 1.5px #3a3d42,0 40px 90px rgba(0,0,0,.25);max-width:calc(100vw - 44px)}
+.phone-in{position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--b-bg)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:9}
+.sbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;justify-content:space-between;align-items:center;padding:4px 32px 0;font:600 15px -apple-system,system-ui,sans-serif;color:var(--b-ink);z-index:8;pointer-events:none}
+.au-pn{background:var(--st-ground);border-radius:28px;padding:clamp(26px,3.5vw,38px)}
+.au-pn-k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--st-ink)}
+.au-pn-k i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-pn-k.au-ctx{color:var(--st-ink2)}.au-pn-k.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-pn-t{font-size:clamp(24px,2.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.028em;margin:10px 0 14px;text-wrap:balance}
+.au-pn-h{margin:0;font-size:17px;line-height:1.55;color:var(--st-ink2)}
+.au-pn-h b{color:var(--st-ink);font-weight:600}
+.au-pn-o{margin-top:24px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-pn-o .au-lab{font-size:13px;font-weight:600;color:var(--st-ink3)}
+.au-pn-o .au-val{font-size:clamp(38px,4.4vw,50px);font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--st-accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.au-pn-o .au-sub{font-size:14px;color:var(--st-ink2);margin-top:4px}
+.au-pn-a{margin:18px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-pn-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--st-hair);font-size:13px;color:var(--st-ink3)}
+.au-pn-nav button{background:var(--st-card);border:0;border-radius:980px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--st-ink);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.au-pn-nav button:disabled{opacity:.35;cursor:default}
+.au-hint{text-align:center;font-size:14px;color:var(--st-ink3);margin:22px 0 0}
+
+/* footer */
+.au-foot{padding-block:56px 72px;border-top:1px solid var(--st-hair)}
+.au-foot details{border-bottom:1px solid var(--st-hair);padding-bottom:18px}
+.au-foot summary{cursor:pointer;font-size:17px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.au-foot summary::-webkit-details-marker{display:none}
+.au-foot summary::after{content:"+";font-size:24px;font-weight:300;color:var(--st-ink2)}
+.au-foot details[open] summary::after{content:"−"}
+.au-srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 48px;margin-top:18px}
+.au-srcs h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink3);margin:18px 0 6px}
+.au-srcs dl{margin:0}.au-srcs dt{font-size:14.5px;font-weight:600;margin-top:10px}
+.au-srcs dd{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-fine{font-size:12.5px;line-height:1.6;color:var(--st-ink3);margin:22px 0 0;max-width:80ch}
+.au-cta-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:36px}
+.au-cta-line p{margin:0;font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.02em;max-width:34ch}
+
+@media (max-width:900px){
+  .au-split,.au-band{grid-template-columns:1fr}
+  .au-notes{grid-template-columns:1fr}
+  .au-idea{grid-template-columns:40px 1fr}
+  .au-imp{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px}
+  .au-imp .au-l{margin:0}
+  .au-imp .au-v{white-space:nowrap}
+  .au-stage{grid-template-columns:1fr;justify-items:center}
+  .au-pn{width:100%;max-width:520px}
+  .au-srcs{grid-template-columns:1fr}
+}
+@media (max-width:560px){.au-stats{grid-template-columns:1fr}.au-stat{padding:22px 0 0}.au-nums{flex-direction:column;gap:18px}}
+
+/* ================= extras (audit side): video, language, phone view + QR, paywall today vs proposed, ?tour ================= */
+[hidden]{display:none!important}
+/* the device never scrolls: off-screen slides would otherwise make it scrollable by focus / scrollIntoView */
+.phone-in,.scr{overflow:clip}
+/* hero: walkthrough link */
+.au-play::before{content:"▶";font-size:.72em;margin-right:7px;position:relative;top:-1px}
+/* video dialog */
+.au-vid{border:0;padding:0;background:transparent;max-width:min(1120px,94vw);width:100%;overflow:visible}
+.au-vid::backdrop{background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-vid-in{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.au-vid video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.au-vid-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 4px 0;font-size:14px}
+.au-vid-bar a{color:#fff;opacity:.85}
+.au-vid-x{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:980px;padding:8px 16px;font-size:14px;cursor:pointer}
+/* language switch */
+.au-langrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0 0;font-size:13.5px;color:var(--st-ink2);flex-wrap:wrap}
+.au-lsw{display:inline-flex;gap:2px;padding:3px;background:var(--st-ground);border-radius:980px}
+.au-lsw button{border:0;background:none;padding:6px 13px;border-radius:980px;font-size:13.5px;font-weight:500;color:var(--st-ink2);cursor:pointer;white-space:nowrap}
+.au-lsw button.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* QR card (desktop) / full-screen button (phone) */
+.au-qr{display:flex;align-items:center;gap:18px;margin:26px auto 0;max-width:500px;background:var(--st-ground);border-radius:22px;padding:14px 22px 14px 14px}
+.au-qr img{width:112px;height:112px;border-radius:12px;image-rendering:pixelated;flex:none;background:#fff}
+.au-qr b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.au-qr p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:var(--st-ink2)}
+.au-mobw{display:none;text-align:center;margin-top:22px}
+@media (max-width:900px){.au-qr{display:none}.au-mobw{display:block}}
+/* paywall: today vs proposed */
+.au-cmp{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:clamp(24px,4vw,52px);align-items:center;margin-top:clamp(32px,5vw,52px)}
+.au-cmp figure{margin:0;text-align:center}
+.au-cmp figure img{display:block;width:100%;height:auto;filter:drop-shadow(0 24px 44px rgba(0,0,0,.18))}
+.au-cmp figcaption{margin-top:14px;font-size:15px;font-weight:600}
+.au-cmp figcaption span{color:var(--st-ink2);font-weight:400}
+.au-cmp-go{border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;transition:transform .3s}
+.au-cmp-go:hover{transform:translateY(-4px)}
+.au-chg{list-style:none;margin:0;background:var(--st-card);border-radius:24px;padding:4px clamp(18px,2.4vw,28px)}
+.au-chg li{padding:15px 0;border-top:1px solid var(--st-hair)}
+.au-chg li:first-child{border-top:0}
+.au-chg h4{margin:0 0 7px;font-size:16px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.au-chg h4 i{font-style:normal;font-size:12px;font-weight:600;color:var(--st-accent);background:var(--st-mark);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.au-was,.au-now{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:14.5px;line-height:1.42}
+.au-was{color:var(--st-ink3)}
+.au-now{color:var(--st-ink);margin-top:3px}
+.au-was em,.au-now em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.au-now em{color:var(--st-link)}
+.au-kept{margin:22px 0 0;font-size:14px;color:var(--st-ink2);text-align:center}
+@media (max-width:900px){.au-cmp{grid-template-columns:1fr 1fr;gap:18px}.au-chg{grid-column:1 / -1;order:3}.au-was,.au-now{grid-template-columns:70px 1fr}}
+
+/* ?app — the prototype full screen on a real phone, with a bar that opens the idea panel */
+html.appmode,html.appmode body{height:100%;overflow:hidden;background:#000}
+html.appmode .au-nav,html.appmode .au-top-hero,html.appmode #why,html.appmode #ideas,html.appmode #compare,html.appmode .au-foot,
+html.appmode .au-proto-h,html.appmode #prototype .au-langrow,html.appmode #chips,html.appmode .au-hint,html.appmode .au-qr,html.appmode .au-mobw{display:none!important}
+html.appmode #prototype{padding:0;background:#000}
+html.appmode #prototype .au-wrap{padding:0;max-width:none}
+html.appmode .au-stage{display:block;margin:0}
+html.appmode .phone{position:fixed;top:0;left:0;right:0;margin:0 auto;width:min(100%,480px);height:calc(100% - 56px - env(safe-area-inset-bottom,0px));max-width:none;border-radius:0;padding:0;box-shadow:none;background:#000}
+html.appmode .phone-in{border-radius:0}
+html.appmode .island,html.appmode .sbar{display:none}
+html.appmode .scr .s-pad{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 16px))}
+html.appmode .scr .s-x,html.appmode .scr .s-lang{top:max(54px,calc(env(safe-area-inset-top,0px) + 10px))}
+.au-appbar,.au-scrim{display:none}
+html.appmode .au-appbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 12px env(safe-area-inset-bottom,0px) 16px;align-items:center;gap:12px;background:#0b0b0c;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.au-ab-why{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-size:14px;font-weight:500;text-align:left;cursor:pointer;padding:0}
+.au-ab-why i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);flex:none}
+.au-ab-why span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.au-ab-why em{font-style:normal;color:rgba(255,255,255,.6);margin-left:auto;flex:none;font-size:13px}
+.au-appbar .au-lsw{background:rgba(255,255,255,.12)}
+.au-appbar .au-lsw button{color:rgba(255,255,255,.75);padding:5px 11px}
+.au-appbar .au-lsw button.on{background:#fff;color:#000}
+html.appmode #panel{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:none;width:auto;margin:0 auto;border-radius:24px 24px 0 0;max-height:78%;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,.7,.2,1);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+html.appmode.au-open #panel{transform:none}
+html.appmode.au-open .au-scrim{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.5)}
+
+/* ?tour — 1280×720 walkthrough frames (record-video.sh renders them into assets/walkthrough.mp4) */
+.au-tour{display:none}
+html.tourmode,html.tourmode body{overflow:hidden;background:var(--st-ground)}
+html.tourmode body *{visibility:hidden}
+html.tourmode .phone,html.tourmode .phone *,html.tourmode .au-tour,html.tourmode .au-tour *{visibility:visible}
+html.tourmode .phone{position:fixed;left:170px;top:44px;margin:0;transform:scale(.755);transform-origin:0 0;box-shadow:0 0 0 1.5px #3a3d42,0 34px 80px rgba(0,0,0,.22);z-index:5;max-width:none}
+html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-events:none;color:var(--st-ink)}
+.au-tb{position:absolute;left:590px;top:30px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.au-tb img{width:26px;height:26px;border-radius:7px}
+.au-tb small{font-size:16px;font-weight:400;color:var(--st-ink2)}
+.au-tby{position:absolute;right:48px;top:32px;font-size:14px;color:var(--st-ink3)}
+.au-tcap{position:absolute;left:590px;right:60px;top:50%;transform:translateY(-50%)}
+.au-tk{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:600}
+.au-tk i{width:9px;height:9px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-tk.au-ctx{color:var(--st-ink2)}.au-tk.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-tt{font-size:46px;line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:14px 0 14px;text-wrap:balance}
+.au-tl{font-size:23px;line-height:1.36;color:var(--st-ink2);letter-spacing:-.01em;margin:0;max-width:28ch}
+.au-to{margin-top:28px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-to small{display:block;font-size:14px;font-weight:600;color:var(--st-ink3)}
+.au-to b{display:inline-block;font-size:62px;font-weight:700;letter-spacing:-.045em;line-height:1.08;color:var(--st-accent);margin-top:4px}
+.au-to span{display:block;font-size:16px;color:var(--st-ink2);margin-top:2px}
+.au-tprog{position:absolute;left:48px;right:48px;bottom:22px;height:4px;border-radius:3px;background:var(--st-hair);overflow:hidden}
+.au-tprog i{display:block;height:100%;background:var(--st-hi)}
+.au-ttap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 2.5px rgba(255,255,255,.9),0 6px 16px rgba(0,0,0,.35);opacity:0}
+.au-tintro,.au-tend{position:absolute;inset:0;background:var(--st-ground);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.au-tintro .au-lede{margin-top:18px}
+.au-te-h{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-.035em;margin:0;max-width:18ch;text-wrap:balance}
+.au-te-n{display:flex;gap:64px;margin-top:30px}
+.au-te-n small{display:block;font-size:14px;color:var(--st-ink2)}
+.au-te-n b{display:block;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-accent);margin:4px 0 6px}
+.au-te-n span{font-size:15px;color:var(--st-ink2)}
+.au-te-q{display:flex;align-items:center;gap:18px;margin-top:34px;background:var(--st-card);border-radius:20px;padding:12px 24px 12px 12px;text-align:left}
+.au-te-q img{width:104px;height:104px;border-radius:10px;image-rendering:pixelated}
+.au-te-q b{display:block;font-size:18px;font-weight:600}
+.au-te-q span{display:block;font-size:15px;color:var(--st-link);margin-top:3px}
+.au-te-f{position:absolute;bottom:44px;left:0;right:0;font-size:13px;color:var(--st-ink3);margin:0}
+
+/* ---------- screen engine (layout only, no colours) ---------- */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-font);
+     transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);overflow:hidden;text-align:left;line-height:normal;font-size:16px}
+.scr.is-active{transform:none;z-index:2}.scr.is-past{transform:translateX(-28%)}.scr.under{transform:none;z-index:1}
+.scr.sheet{transform:translateY(100%)}.scr.sheet.is-active{transform:none}
+.nofx,.nofx *{transition:none!important}
+.shot .scr{transition:none!important}
+/* ?phone — just the device at (10,10), for shoot.sh and hero-stills.sh (&clear = transparent ground) */
+.phoneonly body{background:#141615}
+.phoneonly.clear body{background:transparent}
+.phoneonly body *{visibility:hidden}
+.phoneonly .phone,.phoneonly .phone *{visibility:visible}
+.phoneonly .phone{position:fixed;top:10px;left:10px;z-index:99;box-shadow:none;max-width:none;margin:0}
+
+/* SCREENS:START — Formula's screens: white ground, coral selection + CTA, green for results, gradient pay button (sampled off their recorded screens). */
+.s-pad{flex:1;display:flex;flex-direction:column;padding:62px 22px 26px;gap:12px;position:relative;z-index:1;min-height:0}
+.s-top{display:flex;align-items:center;gap:12px;min-height:30px}
+.s-back{background:none;border:0;padding:0;color:var(--b-ink);font:400 26px/1 var(--b-font);cursor:pointer;width:30px;text-align:left}
+.s-step{flex:1;text-align:center;margin-right:42px}
+.s-step small{display:block;color:var(--b-primary);font:500 13px var(--b-font);margin-bottom:6px}
+.s-dots{display:flex;align-items:center;justify-content:space-between;position:relative;height:12px;margin:0 6px}
+.s-dots::before{content:"";position:absolute;left:0;right:0;top:5px;height:3px;border-radius:3px;background:var(--b-line)}
+.s-dots i{position:relative;width:12px;height:12px;border-radius:50%;background:var(--b-bg);border:2px solid var(--b-line)}
+.s-dots i.on{background:var(--b-primary);border-color:var(--b-primary)}
+.s-dots b{position:absolute;left:0;top:5px;height:3px;border-radius:3px;background:var(--b-primary)}
+.s-h{font:700 27px/1.18 var(--b-font);letter-spacing:-.02em;margin:10px 0 0;text-align:center;color:var(--b-ink)}
+.s-sub{font:400 15px/1.45 var(--b-font);color:var(--b-ink2);margin:0;text-align:center}
+.s-cta{margin-top:auto;align-self:center;min-width:180px;border:0;border-radius:var(--b-pill);background:var(--b-primary);color:var(--b-primary-ink);font:500 15px var(--b-font);letter-spacing:.02em;text-transform:uppercase;padding:15px 40px;cursor:pointer}
+.s-cta.s-wide{align-self:stretch}
+.s-cta.s-grad{background:var(--b-grad);align-self:stretch;font-weight:600;letter-spacing:.08em;padding:17px}
+.s-cta:disabled{opacity:.4}
+/* welcome */
+.s-plate{position:absolute;left:0;right:0;top:0;height:60%;background:var(--b-cream);overflow:hidden;padding-top:50px}
+.s-plate img{width:100%;height:100%;object-fit:cover;object-position:50% 0;display:block}
+.s-wel{margin-top:auto;background:var(--b-bg);border-radius:26px 26px 0 0;margin-inline:-22px;margin-bottom:-26px;padding:26px 24px 30px;display:flex;flex-direction:column;gap:12px;position:relative}
+.s-logo{height:30px;width:auto;align-self:center}
+.s-wel .s-h{font-size:24px;margin-top:4px}
+/* diet */
+.s-opt{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--b-surface);border:0;border-radius:10px;padding:15px 16px;font:500 15px var(--b-font);color:var(--b-ink);cursor:pointer;text-align:left}
+.s-opt::after{content:"+";color:var(--b-line);font-size:20px;line-height:1}
+.s-opt.on{background:var(--b-primary);color:var(--b-primary-ink)}
+.s-opt.on::after{content:"✓";color:var(--b-primary-ink);font-size:15px}
+.s-opts{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+/* target weight */
+.s-unit{display:flex;gap:6px;align-self:center;margin-top:4px}
+.s-unit span{font:600 13px var(--b-font);padding:7px 16px;border-radius:var(--b-pill);color:var(--b-ink)}
+.s-unit span.on{background:var(--b-primary);color:var(--b-primary-ink)}
+.s-big{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:10px}
+.s-big b{font:700 50px/1 var(--b-font);letter-spacing:-.03em;color:var(--b-ink)}
+.s-big b small{font:500 22px var(--b-font);margin-left:6px}
+.s-pm{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--b-line);background:var(--b-bg);color:var(--b-primary);font:400 24px/1 var(--b-font);cursor:pointer}
+.s-ruler{position:relative;height:74px;margin:4px -22px 0;background:repeating-linear-gradient(90deg,var(--b-line) 0 1.5px,transparent 1.5px 13px) 0 26px/100% 30px no-repeat}
+.s-ruler::after{content:"";position:absolute;left:50%;top:6px;width:3px;height:64px;margin-left:-1.5px;border-radius:2px;background:var(--b-primary)}
+.s-ruler span{position:absolute;top:2px;font:500 14px var(--b-font);color:var(--b-line)}
+.s-goalcard{border:1px solid var(--b-line);border-radius:12px;padding:16px;text-align:center;margin-top:8px}
+.s-goalcard b{display:block;color:var(--b-green);font:700 15px var(--b-font)}
+.s-goalcard span{font:500 15px var(--b-font);color:var(--b-ink)}
+/* loader */
+.s-bars{display:flex;flex-direction:column;gap:18px;margin-top:22px}
+.s-bar p{display:flex;justify-content:space-between;margin:0 0 7px;font:500 14px var(--b-font);color:var(--b-ink2)}
+.s-bar.on p{color:var(--b-ink)}
+.s-bar i{display:block;height:7px;border-radius:7px;background:var(--b-surface);overflow:hidden}
+.s-bar i b{display:block;height:100%;width:0;border-radius:7px;background:var(--b-primary);transition:width .6s}
+.s-proof{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:20px}
+.s-proof img{height:56px;width:auto;flex:none}
+.s-proof div{text-align:center}
+.s-proof strong{display:block;font:700 22px/1.1 var(--b-font);color:var(--b-ink)}
+.s-proof span{font:400 13px/1.3 var(--b-font);color:var(--b-ink)}
+.s-rev{background:var(--b-bg);border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.09);padding:16px 18px;text-align:center;margin-top:6px}
+.s-stars{color:var(--b-accent2);font-size:17px;letter-spacing:3px}
+.s-rev p{margin:8px 0 6px;font:600 14px/1.4 var(--b-font);color:var(--b-ink)}
+.s-rev small{font:400 12px var(--b-font);color:var(--b-ink2)}
+.s-store{font:500 12.5px var(--b-font);color:var(--b-ink2);text-align:center;margin:10px 0 0}
+/* plan summary */
+.s-based{color:var(--b-green);font:600 15px var(--b-font);text-align:center;margin:6px 0 0}
+.s-you{font:700 28px/1.2 var(--b-font);text-align:center;margin:4px 0 0;color:var(--b-ink);letter-spacing:-.015em}
+.s-you em{font-style:normal;color:var(--b-green)}
+.s-chart{display:block;width:100%;height:150px;margin-top:8px}
+.s-chart .ln{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.s-chart .c1{stroke:var(--b-primary)}.s-chart .c2{stroke:var(--b-border)}.s-chart .c3{stroke:var(--b-accent2)}.s-chart .c4{stroke:var(--b-green)}
+.s-chart .gr{stroke:var(--b-line);stroke-dasharray:2 4;stroke-width:1}
+.s-chart .st{fill:var(--b-primary)}
+.s-chart .gl{fill:var(--b-green)}
+.s-chart .gh{fill:var(--b-green);opacity:.18}
+.s-chart text{font:600 11px var(--b-font)}
+.s-chart .tx1{fill:var(--b-primary)}
+.s-chart .tx2{fill:var(--b-ink2);font-weight:500}
+.s-chart .tx3{fill:var(--b-primary-ink)}
+.s-facts{display:grid;grid-template-columns:1fr 1fr;gap:16px 10px;margin-top:6px}
+.s-fact{display:flex;gap:8px;align-items:flex-start}
+.s-fact i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--b-green);color:var(--b-primary-ink);font:700 12px/24px var(--b-font);text-align:center;font-style:normal}
+.s-fact small{display:block;font:400 13px var(--b-font);color:var(--b-ink2)}
+.s-fact span{display:block;font:500 15px/1.3 var(--b-font);color:var(--b-ink)}
+.s-recipe{display:flex;align-items:center;gap:14px;background:var(--b-surface);border-radius:var(--b-radius);padding:12px;margin-top:10px}
+.s-recipe img{width:78px;height:78px;border-radius:12px;object-fit:cover;flex:none}
+.s-recipe b{display:block;font:600 15.5px var(--b-font);color:var(--b-ink)}
+.s-recipe span{display:block;font:400 13.5px/1.35 var(--b-font);color:var(--b-ink2);margin-top:2px}
+/* paywall (proposed) */
+.s-x{position:absolute;top:56px;left:16px;z-index:4;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.06);color:var(--b-ink);font:400 15px/30px var(--b-font);cursor:pointer;text-align:center;padding:0}
+.s-pwtop{background:var(--b-cream);margin:-62px -22px 0;padding:92px 22px 10px;text-align:center}
+.s-pwtop small{display:block;font:600 14px var(--b-font);color:var(--b-green)}
+.s-pwtop h2{font:700 25px/1.2 var(--b-font);margin:4px 0 0;color:var(--b-ink);letter-spacing:-.015em}
+.s-pwtop h2 em{font-style:normal;color:var(--b-green)}
+.s-pwtop .s-chart{height:78px;margin-top:4px}
+.s-rate{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:2px}
+.s-rate img{height:40px;width:auto}
+.s-rate div{text-align:center}
+.s-rate b{display:block;font:700 16px var(--b-font);color:var(--b-ink);white-space:nowrap}
+.s-rate span{display:block;font:400 12px var(--b-font);color:var(--b-ink2)}
+.s-rate b span{display:inline;font:inherit;color:inherit}
+.s-rate b .s-stars{font-size:14px;letter-spacing:1px;color:var(--b-accent2)}
+.s-feats{display:flex;flex-direction:column;gap:7px;margin:2px 4px 4px}
+.s-feats p{display:flex;gap:9px;align-items:center;margin:0;font:500 13.5px var(--b-font);color:var(--b-ink)}
+.s-feats i{flex:none;width:18px;height:18px;border-radius:50%;background:var(--b-green);color:var(--b-primary-ink);font:700 10px/18px var(--b-font);text-align:center;font-style:normal}
+.s-plans{display:flex;flex-direction:column;gap:9px}
+.s-plan{position:relative;display:flex;justify-content:space-between;align-items:center;width:100%;background:var(--b-surface);border:1.5px solid transparent;border-radius:var(--b-radius);padding:12px 14px;cursor:pointer;font-family:var(--b-font);text-align:left;color:var(--b-ink)}
+.s-plan.on{background:var(--b-bg);border-color:var(--b-border)}
+.s-plan small{display:block;font:400 12.5px var(--b-font);color:var(--b-ink2)}
+.s-plan strong{display:block;font:700 17px var(--b-font);color:var(--b-ink);white-space:nowrap}
+.s-plan .s-pm2{text-align:right;font:500 12.5px/1.3 var(--b-font);color:var(--b-ink2);white-space:nowrap}
+.s-plan .s-pm2 b{display:block;font:700 14px var(--b-font);color:var(--b-ink)}
+.s-save{position:absolute;top:-9px;left:14px;background:var(--b-primary);color:var(--b-primary-ink);font:700 10.5px var(--b-font);letter-spacing:.04em;padding:3px 8px;border-radius:6px}
+.s-renew{font:400 11.5px/1.4 var(--b-font);color:var(--b-ink2);text-align:center;margin:0}
+.s-legal{display:flex;justify-content:center;gap:16px;font:400 11px var(--b-font);color:var(--b-ink2)}
+/* offer sheet */
+.scr.s-sheet{background:rgba(0,0,0,.42)}
+.s-sh{margin-top:auto;background:var(--b-bg);border-radius:22px 22px 0 0;padding:22px 22px 30px;display:flex;flex-direction:column;gap:12px}
+.s-shtop{display:flex;justify-content:space-between;align-items:center}
+.s-shtop b{font:700 19px var(--b-font);color:var(--b-ink)}
+.s-shtop button{background:none;border:0;color:var(--b-primary);font:500 15px var(--b-font);cursor:pointer;padding:0}
+.s-sh p{margin:0;font:400 14.5px/1.45 var(--b-font);color:var(--b-ink)}
+.s-sh p em{font-style:normal;font-weight:600;color:var(--b-green)}
+.s-offcard{display:flex;justify-content:space-between;align-items:center;border:1.5px solid var(--b-border);border-radius:var(--b-radius);padding:14px 16px}
+.s-offcard small{display:block;font:400 12.5px var(--b-font);color:var(--b-ink2)}
+.s-offcard strong{font:700 19px var(--b-font);color:var(--b-ink)}
+.s-offcard div:last-child{text-align:right;font:500 12.5px/1.3 var(--b-font);color:var(--b-ink2)}
+.s-offcard div:last-child b{display:block;font:700 15px var(--b-font);color:var(--b-ink)}
+.s-no{background:none;border:0;color:var(--b-ink2);font:400 14px var(--b-font);cursor:pointer;align-self:center;padding:4px}
+/* after purchase */
+.s-ok{align-self:center;display:flex;align-items:center;gap:7px;background:var(--b-blush);color:var(--b-primary);font:600 13px var(--b-font);padding:7px 14px;border-radius:var(--b-pill);margin-top:8px}
+.s-half{font:700 30px var(--b-font);text-align:center;margin:26px 0 0;color:var(--b-ink)}
+.s-next{background:var(--b-surface);border-radius:var(--b-radius);padding:6px 16px;margin-top:10px}
+.s-next p{margin:0;padding:11px 0;border-top:1px solid var(--b-line);font:500 13.5px/1.35 var(--b-font);color:var(--b-ink)}
+.s-next p:first-child{border-top:0;font:600 11.5px var(--b-font);letter-spacing:.06em;text-transform:uppercase;color:var(--b-ink2)}
+/* paywall today (Keto Diet App recording) */
+.s-kit{position:absolute;left:0;right:0;top:0;height:268px;overflow:hidden}
+.s-kit img{width:100%;height:100%;object-fit:cover;display:block}
+.s-tdbody{position:absolute;left:0;right:0;top:268px;bottom:0;display:flex;flex-direction:column;padding:16px 22px 22px;gap:10px;background:var(--b-bg)}
+.s-tdq{text-align:center}
+.s-tdq p{margin:6px 0 4px;font:500 14px/1.4 var(--b-font);color:var(--b-ink)}
+.s-tdq small{font:400 12px var(--b-font);color:var(--b-ink2)}
+.s-tddots{display:flex;justify-content:center;gap:7px;margin:2px 0 4px}
+.s-tddots i{width:6px;height:6px;border-radius:50%;background:var(--b-line)}
+.s-tddots i:first-child{background:var(--b-ink2)}
+.s-strike{text-decoration:line-through;color:var(--b-ink2);font-weight:400;margin-right:4px}
+.s-see{text-align:center;font:400 13.5px var(--b-font);color:var(--b-ink2);margin:2px 0}
+/* SCREENS:END */
+</style>
+</head>
+<body>
+
+<nav class="au-nav" aria-label="Sections">
+  <div class="au-nav-in">
+    <div class="au-brand">
+      <img src="assets/brand/appstore-icon.jpg" alt="">
+      <span>Growth Audit <small>· Formula</small></span>
+    </div>
+    <a class="au-opt" href="#why">Why this</a>
+    <a href="#ideas">Five ideas</a>
+    <a href="#prototype">Prototype</a>
+    <a class="au-opt" href="#compare" id="navCompare" hidden>Paywall</a>
+  </div>
+</nav>
+
+<header class="au-top-hero" id="top">
+  <div class="au-wrap">
+    <p class="au-eyebrow"><i></i>Growth Audit · October 2026</p>
+    <h1 class="au-display">Formula</h1>
+    <p class="au-lede">Five ideas to turn more Formula dieters into subscribers. <span>Each one built into your own onboarding, so you can tap through it.</span></p>
+    <p class="au-byline">Prepared by Adapty for the Formula team</p>
+    <div class="au-ctas">
+      <a class="au-btn" href="#ideas">See the five ideas</a>
+      <a class="au-lnk" href="#prototype">Open the prototype</a>
+      <button type="button" class="au-lnk au-play" id="heroVideo" hidden>Watch the 30-second walkthrough</button>
+    </div>
+  </div>
+  <!-- filled from CONTENT.hero: three screen ids → assets/hero/<id>.png (make them with hero-stills.sh) -->
+  <div class="au-phones" id="heroPhones" aria-label="Three screens from the prototype"></div>
+</header>
+
+<section class="au-sec au-white" id="why">
+  <div class="au-wrap">
+    <div class="au-split">
+      <div>
+        <p class="au-kicker">Why you’re seeing this</p>
+        <h2 class="au-h2">30,000 subscription apps taught us what moves conversion. <span>Here’s what we’d test first at Formula.</span></h2>
+      </div>
+      <div>
+        <p>Adapty runs subscriptions for <b>more than 30,000 apps</b>, so we see which onboarding and paywall changes lift revenue across the whole market, not just inside one app.</p>
+        <p>We pointed that at Formula. We took <b>your own screens, copy and prices</b> from your App Store listing, your site and web quiz, and a public recording of your Keto Diet App’s onboarding (same team, same components and prices), and rebuilt the path from install to paywall around the five ideas with the most potential.</p>
+      </div>
+    </div>
+    <div class="au-stats">
+      <div class="au-stat"><b>30,000+</b><span>apps run their subscriptions on Adapty</span></div>
+      <div class="au-stat"><b>5</b><span>ideas, each built as a working screen</span></div>
+      <div class="au-stat"><b>0</b><span>changes to your art direction</span></div>
+    </div>
+    <div class="au-notes">
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <h3>Five ideas, not fifteen</h3>
+        <p>We’re not proposing to rebuild every screen. These are the changes with the highest potential, ranked by what we’d test first.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg></div>
+        <h3>Your design, not ours</h3>
+        <p>Every colour, control and price in the prototype is Formula’s. We changed the order and what gets shown.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H15"/></svg></div>
+        <h3>We hope you haven’t tried these yet</h3>
+        <p>We work from the outside, so we can’t see Formula’s live flow or your test history. If you’ve already run one of these, tell us and we’ll go deeper on the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec" id="ideas">
+  <div class="au-wrap">
+    <div class="au-ideas-h">
+      <p class="au-kicker">The shortlist</p>
+      <h2 class="au-h2">Five ideas. <span>Ranked by what we’d test first.</span></h2>
+    </div>
+    <div class="au-list" id="ideaList"></div>
+    <div class="au-band">
+      <div>
+        <p class="au-k">Potential outcome, based on Adapty data</p>
+        <h3>Together they work on three moments: what you ask before the price, what the paywall says back, and what happens when someone says no.</h3>
+        <p class="au-fn" id="bandFn"></p>
+        <a class="au-btn" href="#prototype">Tap through the prototype</a>
+      </div>
+      <div class="au-nums" id="bandNums"></div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec au-white" id="prototype">
+  <div class="au-wrap">
+    <div class="au-proto-h">
+      <p class="au-kicker">The prototype</p>
+      <h2 class="au-h2">Every idea, inside your own onboarding.</h2>
+      <p>Tap through it like a new user, or jump straight to an idea. Numbered chips mark the screens that carry one.</p>
+    </div>
+    <div class="au-langrow" id="langRow" hidden><span>Prototype language</span><div class="au-lsw" id="langSw" role="group" aria-label="Prototype language"></div></div>
+    <div class="au-seg" id="chips" role="tablist" aria-label="Screens"></div>
+    <div class="au-stage">
+      <div class="phone"><div class="phone-in">
+        <div class="island"></div>
+        <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+
+<!-- SCREENS:START — Formula: welcome (site copy) → diet (their web quiz question) → target weight (kept) → loader (proof) → plan → paywall → offer on close → customize after purchase. "today" = the recorded Keto Diet App paywall, aside. -->
+
+<section class="scr" data-id="welcome">
+  <div class="s-plate"><img src="assets/crop/welcome-plate.png" alt=""></div>
+  <div class="s-pad">
+    <div class="s-wel">
+      <img class="s-logo" src="assets/brand/logo-2.png" alt="Formula">
+      <h1 class="s-h" data-t="wel_h">Anti-inflammatory, Mediterranean &amp; Carnivore Nutrition Plans</h1>
+      <p class="s-sub" data-t="wel_s">Formula.care™ brings personalized meal plans, recipes, and tracking tools for your specific dietary lifestyle.</p>
+      <button class="s-cta s-wide" data-go="diet" data-t="wel_cta">Get started</button>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="diet">
+  <div class="s-pad">
+    <div class="s-top"><button class="s-back" data-back aria-label="Back">←</button></div>
+    <h1 class="s-h" data-t="diet_h">Which diet plan are you interested in?</h1>
+    <div class="s-opts">
+      <button class="s-opt" data-pick="diet:med" data-advance="target"><span data-t="d_med">Mediterranean</span></button>
+      <button class="s-opt" data-pick="diet:carni" data-advance="target"><span data-t="d_carni">Carnivore</span></button>
+      <button class="s-opt" data-pick="diet:anti" data-advance="target"><span data-t="d_anti">Anti-inflammatory</span></button>
+      <button class="s-opt" data-pick="diet:cort" data-advance="target"><span data-t="d_cort">Cortisol Detox</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="target">
+  <div class="s-pad">
+    <div class="s-top"><button class="s-back" data-back aria-label="Back">←</button>
+      <div class="s-step"><small data-t="profile">Profile</small><div class="s-dots"><b style="width:22%"></b><i class="on"></i><i></i><i></i><i></i></div></div></div>
+    <h1 class="s-h" data-t="tw_h">What's your target weight?</h1>
+    <p class="s-sub" data-t="tw_s">We recommend starting with an achievable goal and slowly adjust as you reach it. Small goals lead to great success!</p>
+    <div class="s-unit"><span class="s-u-lb">LB</span><span class="s-u-kg">KG</span></div>
+    <div class="s-big"><button class="s-pm s-minus" aria-label="Lower">−</button><b><span class="s-tw">162</span><small class="s-un">lb</small></b><button class="s-pm s-plus" aria-label="Higher">+</button></div>
+    <div class="s-ruler"><span style="left:12%" class="s-r1">150</span><span style="left:45%" class="s-r2">160</span><span style="left:78%" class="s-r3">170</span></div>
+    <div class="s-goalcard"><b data-t="tw_ok">Reasonable goal 👌</b><span data-t="tw_lose">You will lose <span class="s-pct">10</span>% of your weight</span></div>
+    <button class="s-cta" data-go="loader" data-t="cont">Continue</button>
+  </div>
+</section>
+
+<section class="scr" data-id="loader">
+  <div class="s-pad">
+    <h1 class="s-h" style="margin-top:22px" data-t="ld_h">Preparing your customized program</h1>
+    <div class="s-bars">
+      <div class="s-bar s-b1"><p><span data-t="ld1">Demographic Profile</span><span class="s-p1">0%</span></p><i><b></b></i></div>
+      <div class="s-bar s-b2"><p><span data-t="ld2">Health and Medical Conditions</span><span class="s-p2">0%</span></p><i><b></b></i></div>
+      <div class="s-bar s-b3"><p><span data-t="ld3">Calculating Nutrition Needs</span><span class="s-p3">0%</span></p><i><b></b></i></div>
+      <div class="s-bar s-b4"><p><span data-t="ld4">Activity and Habits</span><span class="s-p4">0%</span></p><i><b></b></i></div>
+    </div>
+    <div class="s-proofwrap">
+      <div class="s-proof"><img src="assets/crop/laurel-l.png" alt=""><div><strong data-t="sp_h">5+ Million People</strong><span data-t="sp_s">started their weight loss journey with us</span></div><img src="assets/crop/laurel-r.png" alt=""></div>
+      <div class="s-rev"><div class="s-stars">★★★★★</div><p data-t="rev">“I love being able to track my calories. It truly helps me be more accountable.”</p><small>Drama Mama</small></div>
+      <p class="s-store" data-t="store">★ 4.5 on the App Store · 36K ratings</p>
+    </div>
+    <button class="s-cta s-ldgo" data-go="plan" data-t="cont2">Continue</button>
+  </div>
+</section>
+
+<section class="scr" data-id="plan">
+  <div class="s-pad" style="gap:10px">
+    <p class="s-based" data-t="based">Based on your answers,</p>
+    <h1 class="s-you"><span data-t="youll">you'll be <em><span class="s-tw2">162 lb</span></em></span><br><span data-t="by">by <em><span class="s-date">20 January</span></em></span></h1>
+    <svg class="s-chart" viewBox="0 0 330 118" aria-hidden="true">
+      <line class="gr" x1="18" y1="10" x2="18" y2="96"/><line class="gr" x1="110" y1="10" x2="110" y2="96"/><line class="gr" x1="202" y1="10" x2="202" y2="96"/><line class="gr" x1="294" y1="10" x2="294" y2="96"/>
+      <polyline class="ln c1" points="18.0,26.0 24.8,26.1 31.6,26.4 38.2,27.0 44.7,27.7 51.1,28.6 57.5,29.6 63.7,30.9 69.9,32.2 76.1,33.7 82.1,35.4"/><polyline class="ln c2" points="82.1,35.4 88.1,37.1 94.1,39.0 100.0,40.9 105.9,42.9 111.8,45.0 117.6,47.1 123.5,49.3 129.3,51.5 135.2,53.8 141.0,56.0"/><polyline class="ln c3" points="141.0,56.0 146.9,58.2 152.7,60.5 158.6,62.7 164.6,64.9 170.6,67.0 176.6,69.1 182.7,71.1 188.9,73.0 195.1,74.9 201.4,76.6"/><polyline class="ln c4" points="201.4,76.6 207.8,78.3 214.2,79.8 220.8,81.1 227.5,82.4 234.2,83.4 241.1,84.3 248.1,85.0 255.3,85.6 262.6,85.9 270.0,86.0"/><line class="ln c4" x1="270" y1="86" x2="318" y2="86"/>
+      <circle class="st" cx="18" cy="26" r="6"/><text class="tx1 s-cw" x="10" y="14">180 lb</text>
+      <circle class="gh" cx="270" cy="86" r="11"/><circle class="gl" cx="270" cy="86" r="6"/>
+      <rect class="gl" x="236" y="44" width="68" height="28" rx="4"/><text class="tx3 s-gl" x="270" y="62" text-anchor="middle">Goal 162 lb</text>
+      <text class="tx2 s-now" x="18" y="112" text-anchor="middle">Now</text><text class="tx2 s-mo" x="270" y="112" text-anchor="middle">Jan</text>
+    </svg>
+    <div class="s-facts">
+      <div class="s-fact"><i>✓</i><div><small data-t="f_diet">Diet</small><span data-bind="label:diet"></span></div></div>
+      <div class="s-fact"><i>✓</i><div><small data-t="f_goal">Goal</small><span data-t="f_lose">Lose <span class="s-dl">18 lb</span></span></div></div>
+      <div class="s-fact" style="grid-column:1 / -1"><i>✓</i><div><small data-t="f_focus">Focus</small><span class="s-focus">Balancing macros</span></div></div>
+    </div>
+    <div class="s-recipe"><img class="s-rimg" src="assets/crop/recipe-med.png" alt=""><div><b data-t="r_h">Your first recipe is ready</b><span data-t="r_s">From 1000+ recipes, picked for your diet</span></div></div>
+    <button class="s-cta s-wide" data-go="paywall" data-t="getplan">Get my plan</button>
+  </div>
+</section>
+
+<section class="scr" data-id="paywall">
+  <button class="s-x" data-go="offer" aria-label="Close">✕</button>
+  <div class="s-pad" style="gap:10px">
+    <div class="s-pwtop">
+      <small><span data-t="pw_k">Your</span> <span data-bind="label:diet"></span> <span data-t="pw_k2">plan</span></small>
+      <h2><span data-t="pw_h"><em><span class="s-tw2">162 lb</span></em> by <em><span class="s-date">20 January</span></em></span></h2>
+      <svg class="s-chart" viewBox="0 0 330 78" aria-hidden="true">
+        <polyline class="ln c1" points="26.0,18.0 33.0,18.1 39.8,18.3 46.4,18.7 53.0,19.2 59.4,19.8 65.6,20.6 71.8,21.4 77.8,22.4 83.7,23.4 89.6,24.6"/><polyline class="ln c2" points="89.6,24.6 95.4,25.8 101.0,27.1 106.7,28.4 112.2,29.8 117.7,31.3 123.2,32.8 128.6,34.3 134.0,35.9 139.4,37.4 144.8,39.0"/><polyline class="ln c3" points="144.8,39.0 150.1,40.6 155.5,42.1 160.9,43.7 166.3,45.2 171.7,46.7 177.1,48.2 182.7,49.6 188.2,50.9 193.8,52.2 199.5,53.4"/><polyline class="ln c4" points="199.5,53.4 205.3,54.6 211.2,55.6 217.1,56.6 223.1,57.4 229.3,58.2 235.6,58.8 242.0,59.3 248.5,59.7 255.2,59.9 262.0,60.0"/><line class="ln c4" x1="262" y1="60" x2="312" y2="60"/>
+        <circle class="st" cx="26" cy="18" r="6"/><text class="tx1 s-cw" x="40" y="14">180 lb</text>
+        <circle class="gh" cx="262" cy="60" r="11"/><circle class="gl" cx="262" cy="60" r="6"/><text class="tx2 s-gl2" x="262" y="40" text-anchor="middle" style="font-weight:700">162 lb</text>
+      </svg>
+    </div>
+    <div class="s-rate"><img src="assets/crop/laurel-l.png" alt=""><div><b><span class="s-stars">★★★★★</span> <span data-t="pw_rate">4.5</span></b><span data-t="pw_cnt">36K App Store ratings · 5+ million people</span></div><img src="assets/crop/laurel-r.png" alt=""></div>
+    <div class="s-feats"><p><i>✓</i><span data-t="ft1">Full recipe and insights library</span></p><p><i>✓</i><span data-t="ft2">Voice input and barcode scanning</span></p><p><i>✓</i><span data-t="ft3">Live support from diet coaches</span></p></div>
+    <div class="s-plans">
+      <button class="s-plan" data-pick="plan:year"><span class="s-save"><span data-t="save">SAVE 75%</span></span><div><small data-t="p_y">Yearly</small><strong data-t="p_yp">$89.99</strong></div><div class="s-pm2"><b data-t="p_ym">$7.50</b><span data-t="pmo">per month</span></div></button>
+      <button class="s-plan" data-pick="plan:q"><div><small data-t="p_q">3 Months</small><strong data-t="p_qp">$59.99</strong></div><div class="s-pm2"><b data-t="p_qm">$20.00</b><span data-t="pmo2">per month</span></div></button>
+      <button class="s-plan" data-pick="plan:m"><div><small data-t="p_m">Monthly</small><strong data-t="p_mp">$29.99</strong></div><div class="s-pm2"><b data-t="p_mm">$29.99</b><span data-t="pmo3">per month</span></div></button>
+    </div>
+    <button class="s-cta s-grad" data-go="custom" data-t="getplan2">Get my plan</button>
+    <p class="s-renew"><span data-show="plan:year"><span data-t="rn_y">Renews at $89.99 a year. Cancel anytime in Settings.</span></span><span data-show="plan:q"><span data-t="rn_q">Renews at $59.99 every 3 months. Cancel anytime in Settings.</span></span><span data-show="plan:m"><span data-t="rn_m">Renews at $29.99 a month. Cancel anytime in Settings.</span></span></p>
+    <div class="s-legal"><span data-t="terms">Terms</span><span data-t="privacy">Privacy</span><span data-t="restore">Restore</span></div>
+  </div>
+</section>
+
+<section class="scr sheet s-sheet" data-id="offer">
+  <div class="s-pad" style="padding:0">
+    <div class="s-sh">
+      <div class="s-shtop"><b data-t="of_h">Not ready for a full year?</b><button data-back data-t="close">Close</button></div>
+      <p data-t="of_p">Three months of Premium takes you to your goal date, <em><span class="s-date">20 January</span></em>.</p>
+      <div class="s-offcard"><div><small data-t="p_q2">3 Months</small><strong data-t="of_pr">$59.99</strong></div><div><b data-t="of_m">$20.00</b><span data-t="pmo4">per month</span></div></div>
+      <button class="s-cta s-grad" data-go="custom" data-t="of_cta">Start 3 months</button>
+      <p class="s-renew" data-t="of_rn">Renews at $59.99 every 3 months. Cancel anytime in Settings.</p>
+      <button class="s-no" data-back data-t="nothanks">No thanks</button>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="custom">
+  <div class="s-pad">
+    <div class="s-ok"><span>✓</span><span data-t="cu_ok">Premium is active</span></div>
+    <h1 class="s-half" data-t="cu_h">Halfway there!</h1>
+    <p class="s-sub" style="color:var(--b-ink);font-weight:600" data-t="cu_s1">We've created a basic plan for you.</p>
+    <p class="s-sub" data-t="cu_s2">Now let's customize it. Please take your time while answering the following questions. Every answer will slightly influence your personal plan.</p>
+    <div class="s-next">
+      <p data-t="cu_n">Coming up, after the purchase</p>
+      <p data-t="cu_q1">When was the last time you were at your ideal weight?</p>
+      <p data-t="cu_q2">What's your work schedule?</p>
+      <p data-t="cu_q3">Do you plan to start dieting on your own?</p>
+    </div>
+    <button class="s-cta" data-t="cont3">Continue</button>
+  </div>
+</section>
+
+<section class="scr" data-id="today" data-aside>
+  <div class="s-kit"><img src="assets/crop/today-kitchen.png" alt=""></div>
+  <div class="s-tdbody">
+    <div class="s-tdq"><div class="s-stars">★★★★★</div><p>This app makes keto so doable. It does all the work. All I do is eat!</p><small>Andy Tryhard</small></div>
+    <div class="s-tddots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="s-plans">
+      <div class="s-plan on"><div><small>Yearly</small><strong><span class="s-strike">$89.99</span>$69.99</strong></div><div class="s-pm2"><b>$5.83</b>per month</div></div>
+      <div class="s-plan"><div><small>3 Months</small><strong><span class="s-strike">$59.99</span>$39.99</strong></div><div class="s-pm2"><b>$13.33</b>per month</div></div>
+    </div>
+    <p class="s-see">See other plans</p>
+    <div class="s-cta s-grad" style="text-align:center">CONTINUE</div>
+    <p class="s-renew">Your plan will auto-renew as a yearly plan at $89.99 after 1-year intro offer.</p>
+    <div class="s-legal" style="margin-top:auto"><span>Terms</span><span>Privacy</span><span>Restore</span></div>
+  </div>
+</section>
+<!-- SCREENS:END -->
+
+      </div></div>
+      <div class="au-pn" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="au-hint">Close the paywall with ✕ to see idea 5. Pick a different diet or goal weight and the plan, date and paywall follow.</p>
+    <!-- shown when CONTENT.liveUrl is set: assets/qr-app.png = qr.swift "<liveUrl>?app" -->
+    <div class="au-qr" id="qrCard" hidden><img src="assets/qr-app.png" alt="QR code that opens the prototype full screen"><div><b>Try it on your phone</b><p>Scan to open the prototype full screen, the way a new user would see it.</p></div></div>
+    <div class="au-mobw" id="qrMob" hidden><a class="au-btn" href="?app">Open it full screen</a></div>
+  </div>
+</section>
+
+<!-- the paywall TODAY vs PROPOSED — built from CONTENT.compare (stills: assets/hero/<today>.png, <proposed>.png) -->
+<section class="au-sec" id="compare" hidden><div class="au-wrap" id="cmpBody"></div></section>
+
+<footer class="au-foot" id="sources">
+  <div class="au-wrap">
+    <details id="srcDetails">
+      <summary>Where the numbers come from</summary>
+      <div class="au-srcs" id="srcBody"></div>
+    </details>
+    <p class="au-fine" id="fine"></p>
+    <div class="au-cta-line">
+      <p>Every screen here can be built and A/B tested in Adapty’s Flow Builder, with no app release.</p>
+      <a class="au-btn" href="https://adapty.io/flow-paywall-builder/" target="_blank" rel="noopener">About Flow Builder</a>
+    </div>
+  </div>
+</footer>
+
+<!-- extras: video dialog (CONTENT.video), ?app bar, ?tour overlay (CONTENT.tour) -->
+<dialog class="au-vid" id="vid" aria-label="Walkthrough video">
+  <div class="au-vid-in"><video id="vidEl" controls muted playsinline preload="none"></video></div>
+  <div class="au-vid-bar"><a id="vidDl" download>Download the MP4</a><button type="button" class="au-vid-x" id="vidX">Close</button></div>
+</dialog>
+<div class="au-scrim" id="abScrim"></div>
+<div class="au-appbar" id="appbar">
+  <button type="button" class="au-ab-why" id="abWhy"><i></i><span id="abT"></span><em>Why ↑</em></button>
+  <div class="au-lsw" id="abLang" role="group" aria-label="Language"></div>
+</div>
+<div class="au-tour" aria-hidden="true">
+  <div class="au-tb"><img src="assets/brand/appstore-icon.jpg" alt="">Growth Audit <small>· Formula</small></div>
+  <div class="au-tby">Prepared by Adapty</div>
+  <div class="au-tcap" id="tCap"></div>
+  <div class="au-ttap" id="tTap"></div>
+  <div class="au-tprog"><i id="tProg"></i></div>
+  <div class="au-tintro" id="tIntro"></div>
+  <div class="au-tend" id="tEnd"></div>
+</div>
+
+<!-- CONTENT — all the audit's words and numbers, as data. Schema (brand-check enforces it):
+     ideas  : 3–5 rows, ranked (the audit is five ideas, never fifteen). screen = the screen that shows it.
+     panel  : one entry per screen. idea = its number in ideas (1-based) or 0 for a context screen.
+              why on an idea screen reads "<b>Try</b> X, <b>because</b> Y." in ≤ 45 words; iv = its range.
+              why on a context screen is one line saying what it sets up.
+     hero   : three screen ids shown as stills in the hero — run hero-stills.sh after the screens are done.
+     outcome: combined "up to" numbers, PS-deck style, never above the ceiling of the per-idea ranges.
+     sources: public facts only — App Store, their site, their screens. No sales research on this page.
+     EXTRAS (each one hides itself when left empty):
+     langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
+     i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
+     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
+     liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
+     video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
+     compare: {today, proposed, kicker, title, sub, todayCap, rows:[{h, idea, was, now}], kept} — today = a data-aside screen
+     tour   : {segments:[{id, d, st, tap:[selector-in-screen, ms], pop, reveal, end}], captions:{id:{n|k, t, l, o, ol}},
+              introLede, endTitle} — ~30 s total; the last segment has end:true (the end card) -->
+<script type="application/json" id="content">
+{
+ "app": "Formula",
+ "state": {
+  "diet": "med",
+  "plan": "year",
+  "w": 180,
+  "t": 162,
+  "load": "4",
+  "lang": "en"
+ },
+ "labels": {
+  "diet": {
+   "med": "Mediterranean",
+   "carni": "Carnivore",
+   "anti": "Anti-inflammatory",
+   "cort": "Cortisol Detox"
+  }
+ },
+ "chips": {
+  "welcome": "Welcome",
+  "diet": "Diet",
+  "target": "Goal weight",
+  "loader": "Loading",
+  "plan": "Your plan",
+  "paywall": "Paywall",
+  "offer": "Offer on close",
+  "custom": "After purchase",
+  "today": "Today"
+ },
+ "hero": [
+  "plan",
+  "paywall",
+  "offer"
+ ],
+ "outcome": {
+  "cr": "+20%",
+  "arpu": "+10%"
+ },
+ "ideas": [
+  {
+   "screen": "paywall",
+   "title": "Turn the paywall into their plan",
+   "what": "The recorded flow ends on ‘you’ll be 50 kg by 21 October’ and GET MY PLAN, then the paywall opens on a kitchen photo, a keto quote and CONTINUE. Lead with their diet, goal weight and date instead, put the 4.5★ rating beside the plans, and show the yearly $89.99 as $7.50 a month, 75% less than $29.99 monthly.",
+   "impact": "+10–20%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "custom",
+   "title": "Ask at the first plan, customize after the purchase",
+   "what": "In the recording the basic plan and its date are ready about 80 seconds in, at ‘Halfway there!’. The paywall waits for some 20 more habit questions, close to four minutes in. Show it at the first plan, and run ‘Now let’s customize it’ right after the purchase.",
+   "impact": "+10–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "plan",
+   "title": "Ask which diet, then build the plan around it",
+   "what": "Formula sells four diets, and your web quiz opens with ‘Which diet plan are you interested in?’, yet the recorded summary only says ‘Diet: No dietary restrictions’. Ask it in the app too, then let the plan name the diet, what it focuses on, and a first recipe from it.",
+   "impact": "+5–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "loader",
+   "title": "Formula’s own proof while the plan builds",
+   "what": "‘Preparing your customized program’ already holds people for a few seconds. Fill it with Formula’s proof: 4.5 stars from 36K App Store ratings, ‘5+ Million People started their weight loss journey with us’ from your site, and a review from it, instead of another app’s customer count.",
+   "impact": "+5–10%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "offer",
+   "title": "A 3-month offer that reaches their date",
+   "what": "Today a closed paywall leads straight to the dashboard. Offer your Quarterly plan once, framed by their own date: $59.99, $20.00 a month, ‘three months takes you to 20 January’. A real plan at its listed price, with no countdown and no strikethrough.",
+   "impact": "+5–10%",
+   "il": "ARPU"
+  }
+ ],
+ "panel": {
+  "welcome": {
+   "idea": 0,
+   "t": "Your welcome, from your site",
+   "why": "Your site’s headline, line and GET STARTED, over your App Store art. We couldn’t see Formula’s in-app welcome, so this is the closest public version."
+  },
+  "diet": {
+   "idea": 0,
+   "t": "The diet question, asked in the app",
+   "why": "The first question of your web quiz, plus Cortisol Detox from your listing. It sets up idea 3."
+  },
+  "target": {
+   "idea": 0,
+   "t": "Target weight, unchanged",
+   "why": "Kept from the recorded flow: your copy, ruler and ‘Reasonable goal’ card. The answer drives the date on the next screens."
+  },
+  "loader": {
+   "idea": 4,
+   "t": "Formula’s own proof while it loads",
+   "why": "<b>Try</b> your 4.5★ App Store rating, the ‘5+ million people’ line and a review from your site on the loader, <b>because</b> people wait here anyway, and proof about Formula lands harder than a count from another app.",
+   "iv": "CR +5–10%",
+   "il": "to purchase",
+   "also": "Your loader labels, word for word. In Spanish the rating switches to the Mexico storefront’s."
+  },
+  "plan": {
+   "idea": 3,
+   "t": "A plan for the diet they chose",
+   "why": "<b>Try</b> naming the diet they picked on the plan, with what it focuses on and a first recipe from it, <b>because</b> four diets is what sets Formula apart, and ‘No dietary restrictions’ throws that away.",
+   "iv": "CR +5–15%",
+   "il": "to purchase",
+   "also": "The date and the 1.5 lb a week pace here are illustrative. Your app computes the real projection, as it does today."
+  },
+  "paywall": {
+   "idea": 1,
+   "t": "The paywall, about their plan",
+   "why": "<b>Try</b> opening the paywall on their diet, goal weight and date, with the rating beside the plans, <b>because</b> the screen before it says GET MY PLAN, and today’s paywall answers with a kitchen photo and CONTINUE.",
+   "iv": "CR +10–20%",
+   "il": "to purchase",
+   "also": "Also here: yearly shown as $7.50 a month and ‘Save 75%’ against monthly, and Monthly on screen instead of behind ‘See other plans’."
+  },
+  "offer": {
+   "idea": 5,
+   "t": "One honest offer on close",
+   "why": "<b>Try</b> one sheet with your Quarterly plan, framed by their goal date, <b>because</b> someone who balks at a year may still want to reach a goal three months away, and $59.99 is a price they can check.",
+   "iv": "ARPU +5–10%",
+   "il": "from people who close the paywall",
+   "also": "If their date is further than three months out, the line changes to ‘well on the way’ instead of promising it."
+  },
+  "custom": {
+   "idea": 2,
+   "t": "Customize after the purchase",
+   "why": "<b>Try</b> moving ‘Now let’s customize it’ and its habit questions to just after the purchase, <b>because</b> the plan and date already exist at the halfway mark, and each question before the price is another chance to leave.",
+   "iv": "CR +10–15%",
+   "il": "to purchase",
+   "also": "Your copy, word for word. The questions still shape the plan, they just come after the paywall."
+  },
+  "today": {
+   "idea": 0,
+   "t": "The paywall today",
+   "why": "Your Keto Diet App paywall as recorded, copy word for word. It sits outside the flow, for the side-by-side below."
+  }
+ },
+ "langs": [
+  {
+   "code": "en",
+   "name": "English"
+  },
+  {
+   "code": "es",
+   "name": "Español · precios de México"
+  }
+ ],
+ "i18n": {
+  "es": {
+   "wel_h": "Planes de nutrición antiinflamatoria, mediterránea y carnívora",
+   "wel_s": "Formula.care™ te da planes de comidas personalizados, recetas y herramientas de seguimiento para tu forma de comer.",
+   "wel_cta": "Comenzar",
+   "diet_h": "¿Qué plan de dieta te interesa?",
+   "d_med": "Mediterránea",
+   "d_carni": "Carnívora",
+   "d_anti": "Antiinflamatoria",
+   "d_cort": "Cortisol Detox",
+   "profile": "Perfil",
+   "tw_h": "¿Cuál es tu peso objetivo?",
+   "tw_s": "Te recomendamos empezar con una meta alcanzable e ir ajustándola. ¡Las metas pequeñas llevan a grandes logros!",
+   "tw_ok": "Meta razonable 👌",
+   "tw_lose": "Vas a perder el <span class=\"s-pct\">10</span>% de tu peso",
+   "cont": "Continuar",
+   "cont2": "Continuar",
+   "cont3": "Continuar",
+   "ld_h": "Preparando tu programa personalizado",
+   "ld1": "Perfil demográfico",
+   "ld2": "Salud y condiciones médicas",
+   "ld3": "Necesidades nutricionales",
+   "ld4": "Actividad y hábitos",
+   "sp_h": "+5 millones de personas",
+   "sp_s": "empezaron su camino para bajar de peso con nosotros",
+   "rev": "“Me encanta poder registrar mis calorías. De verdad me ayuda a ser más constante.”",
+   "store": "★ {rate} en el App Store · {cnt} calificaciones",
+   "based": "Según tus respuestas,",
+   "youll": "vas a pesar <em><span class=\"s-tw2\">73 kg</span></em>",
+   "by": "el <em><span class=\"s-date\">20 de enero</span></em>",
+   "f_diet": "Dieta",
+   "f_goal": "Meta",
+   "f_lose": "Bajar <span class=\"s-dl\">8 kg</span>",
+   "f_focus": "Enfoque",
+   "r_h": "Tu primera receta está lista",
+   "r_s": "De más de 1000 recetas, elegida para tu dieta",
+   "getplan": "Obtener mi plan",
+   "getplan2": "Obtener mi plan",
+   "pw_k": "Tu plan de dieta",
+   "pw_k2": "",
+   "pw_h": "<em><span class=\"s-tw2\">73 kg</span></em> el <em><span class=\"s-date\">20 de enero</span></em>",
+   "pw_rate": "{rate}",
+   "pw_cnt": "{cnt} calificaciones · +5 millones de personas",
+   "save": "AHORRA {save}",
+   "p_y": "Anual",
+   "p_yp": "{yr}",
+   "p_ym": "{ym}",
+   "pmo": "al mes",
+   "pmo2": "al mes",
+   "pmo3": "al mes",
+   "pmo4": "al mes",
+   "p_q": "3 meses",
+   "p_qp": "{q}",
+   "p_qm": "{qm}",
+   "p_m": "Mensual",
+   "p_mp": "{mo}",
+   "p_mm": "{mo}",
+   "rn_y": "Se renueva a {yr} al año. Cancela cuando quieras en Ajustes.",
+   "rn_q": "Se renueva a {q} cada 3 meses. Cancela cuando quieras en Ajustes.",
+   "rn_m": "Se renueva a {mo} al mes. Cancela cuando quieras en Ajustes.",
+   "terms": "Términos",
+   "privacy": "Privacidad",
+   "restore": "Restaurar",
+   "of_h": "¿Aún no quieres un año?",
+   "close": "Cerrar",
+   "of_p": "Tres meses de Premium te llevan a tu fecha meta, el <em><span class=\"s-date\">20 de enero</span></em>.",
+   "p_q2": "3 meses",
+   "of_pr": "{q}",
+   "of_m": "{qm}",
+   "of_cta": "Empezar 3 meses",
+   "of_rn": "Se renueva a {q} cada 3 meses. Cancela cuando quieras en Ajustes.",
+   "nothanks": "No, gracias",
+   "cu_ok": "Premium está activo",
+   "cu_h": "¡Ya vas a la mitad!",
+   "cu_s1": "Creamos un plan básico para ti.",
+   "cu_s2": "Ahora vamos a personalizarlo. Tómate tu tiempo para responder las siguientes preguntas. Cada respuesta ajusta un poco tu plan personal.",
+   "cu_n": "Lo que sigue, después de la compra",
+   "cu_q1": "¿Cuándo fue la última vez que estuviste en tu peso ideal?",
+   "cu_q2": "¿Cuál es tu horario de trabajo?",
+   "cu_q3": "¿Piensas empezar la dieta por tu cuenta?",
+   "ft1": "Biblioteca completa de recetas y artículos",
+   "ft2": "Registro por voz y escáner de códigos",
+   "ft3": "Soporte en vivo de coaches de nutrición"
+  }
+ },
+ "prices": {
+  "es": {
+   "yr": "$1,999.00",
+   "ym": "$166.58",
+   "q": "$1,299.00",
+   "qm": "$433.00",
+   "mo": "$599.00",
+   "save": "72%",
+   "rate": "4.3",
+   "cnt": "159"
+  }
+ },
+ "labelsI18n": {
+  "es": {
+   "diet": {
+    "med": "Mediterránea",
+    "carni": "Carnívora",
+    "anti": "Antiinflamatoria",
+    "cort": "Cortisol Detox"
+   }
+  }
+ },
+ "liveUrl": "https://eddieatadapty.github.io/formula-flow-rebuild/",
+ "video": "assets/walkthrough.mp4",
+ "poster": "assets/walkthrough-poster.jpg",
+ "compare": {
+  "today": "today",
+  "proposed": "paywall",
+  "kicker": "The paywall, side by side",
+  "title": "Today and proposed.",
+  "sub": "Same cards, same button. Now it’s about their plan.",
+  "todayCap": "rebuilt from your Keto Diet App recording",
+  "rows": [
+   {
+    "h": "The top of the screen",
+    "idea": 1,
+    "was": "A kitchen photo, five stars and a quote about keto.",
+    "now": "‘Your Mediterranean plan · 162 lb by 20 January’, with their chart."
+   },
+   {
+    "h": "Proof",
+    "idea": 1,
+    "was": "One reviewer at a time, in a 7-slide carousel.",
+    "now": "4.5★ from 36K App Store ratings and ‘5+ million people’, beside the plans."
+   },
+   {
+    "h": "Plans and saving",
+    "idea": 1,
+    "was": "Yearly and 3 Months; Monthly behind ‘See other plans’.",
+    "now": "All three on screen; yearly as $7.50 a month and ‘Save 75%’ against monthly."
+   },
+   {
+    "h": "Button",
+    "idea": 1,
+    "was": "CONTINUE",
+    "now": "GET MY PLAN, the words on the screen before."
+   },
+   {
+    "h": "On close",
+    "idea": 5,
+    "was": "The dashboard.",
+    "now": "One sheet: 3 months for $59.99, enough to reach their date."
+   }
+  ],
+  "kept": "Kept: your plan cards and coral selection border, the gradient button, the renewal line, and Terms · Privacy · Restore."
+ },
+ "tour": {
+  "introLede": "Five ideas to turn more Formula dieters into subscribers. <span>Built into your own onboarding.</span>",
+  "endTitle": "Five ideas, built into Formula’s own onboarding.",
+  "segments": [
+   {
+    "id": "welcome",
+    "d": 3300,
+    "st": {
+     "load": "0",
+     "diet": "",
+     "plan": "year",
+     "t": 166
+    },
+    "tap": [
+     ".s-cta",
+     2700
+    ]
+   },
+   {
+    "id": "diet",
+    "d": 2300,
+    "tap": [
+     ".s-opt",
+     1500
+    ]
+   },
+   {
+    "id": "diet",
+    "d": 700,
+    "st": {
+     "diet": "med"
+    }
+   },
+   {
+    "id": "target",
+    "d": 1500,
+    "tap": [
+     ".s-minus",
+     1000
+    ]
+   },
+   {
+    "id": "target",
+    "d": 1600,
+    "st": {
+     "t": 162
+    },
+    "tap": [
+     ".s-cta",
+     1100
+    ]
+   },
+   {
+    "id": "loader",
+    "d": 1100,
+    "st": {
+     "load": "1"
+    }
+   },
+   {
+    "id": "loader",
+    "d": 1000,
+    "st": {
+     "load": "3"
+    }
+   },
+   {
+    "id": "loader",
+    "d": 1900,
+    "st": {
+     "load": "4"
+    },
+    "tap": [
+     ".s-ldgo",
+     1500
+    ]
+   },
+   {
+    "id": "plan",
+    "d": 3600,
+    "reveal": ".s-recipe",
+    "tap": [
+     ".s-cta",
+     3100
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 3800,
+    "pop": ".s-rate",
+    "tap": [
+     ".s-x",
+     3300
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 3200,
+    "pop": ".s-offcard",
+    "tap": [
+     ".s-cta",
+     2700
+    ]
+   },
+   {
+    "id": "custom",
+    "d": 2600
+   },
+   {
+    "id": "custom",
+    "d": 3400,
+    "end": true
+   }
+  ],
+  "captions": {
+   "welcome": {
+    "k": "Context",
+    "t": "Your site’s promise, as the first screen",
+    "l": "Then one question your web quiz already asks."
+   },
+   "diet": {
+    "k": "Context",
+    "t": "Which diet plan?",
+    "l": "Four diets is what sets Formula apart."
+   },
+   "target": {
+    "k": "Context",
+    "t": "Target weight, unchanged",
+    "l": "Their answer becomes a date."
+   },
+   "loader": {
+    "n": 4,
+    "t": "Formula’s own proof while it loads",
+    "l": "Your rating, your user count, a review from your site.",
+    "o": "CR +5–10%",
+    "ol": "to purchase"
+   },
+   "plan": {
+    "n": 3,
+    "t": "A plan for the diet they chose",
+    "l": "The diet, its focus and a first recipe.",
+    "o": "CR +5–15%",
+    "ol": "to purchase"
+   },
+   "paywall": {
+    "n": 1,
+    "t": "The paywall, about their plan",
+    "l": "Their diet and date up top; yearly at $7.50 a month.",
+    "o": "CR +10–20%",
+    "ol": "to purchase"
+   },
+   "offer": {
+    "n": 5,
+    "t": "One honest offer on close",
+    "l": "Three months at $59.99, enough to reach their date.",
+    "o": "ARPU +5–10%",
+    "ol": "from people who close it"
+   },
+   "custom": {
+    "n": 2,
+    "t": "Customize after the purchase",
+    "l": "The habit questions move behind the paywall.",
+    "o": "CR +10–15%",
+    "ol": "to purchase"
+   }
+  }
+ },
+ "grounding": "Impact ranges are Adapty’s expected effect from teardowns and A/B tests across 30,000+ subscription apps, not measured lift for Formula. They overlap, so they don’t add up.",
+ "sources": [
+  {
+   "group": "Prices",
+   "items": [
+    {
+     "dt": "$89.99 a year · $59.99 every 3 months · $29.99 a month",
+     "dd": "<a href=\"https://apps.apple.com/us/app/formula-weight-loss-diet-app/id6511248415\" target=\"_blank\" rel=\"noopener\">Formula on the US App Store</a>, In-App Purchases: Formula App Premium $89.99, Formula Premium Quarterly $59.99, Formula Premium Monthly $29.99. The same three prices sit under your Keto Diet App paywall."
+    },
+    {
+     "dt": "$7.50 a month · Save 75% · $20.00 a month",
+     "dd": "Worked out from those prices: $89.99 ÷ 12; $89.99 against 12 × $29.99 ($359.88); $59.99 ÷ 3."
+    },
+    {
+     "dt": "Mexico: $1,999.00 · $1,299.00 · $599.00",
+     "dd": "<a href=\"https://apps.apple.com/mx/app/formula-carb-calorie-tracker/id6511248415\" target=\"_blank\" rel=\"noopener\">Formula on the Mexico App Store</a>, In-App Purchases (yearly, quarterly, monthly). $166.58 and $433.00 a month and ‘Ahorra 72%’ (against 12 × $599.00) follow from them."
+    },
+    {
+     "dt": "Not used",
+     "dd": "The workbook and meal-plan purchases ($29.99–$49.99). Spain’s storefront lists only the quarterly plan (69,99 €), so the Spanish version uses Mexico’s full price list. The $69.99 / $39.99 / $19.99 intro prices appear only on the ‘today’ rebuild, because they come from the Keto Diet App recording."
+    }
+   ]
+  },
+  {
+   "group": "Proof",
+   "items": [
+    {
+     "dt": "★ 4.5 · 36K ratings",
+     "dd": "<a href=\"https://apps.apple.com/us/app/formula-weight-loss-diet-app/id6511248415\" target=\"_blank\" rel=\"noopener\">US App Store</a>: 4.47 from 35,725 ratings."
+    },
+    {
+     "dt": "★ 4.3 · 159 calificaciones",
+     "dd": "<a href=\"https://apps.apple.com/mx/app/formula-carb-calorie-tracker/id6511248415\" target=\"_blank\" rel=\"noopener\">Mexico App Store</a>, shown in the Spanish version."
+    },
+    {
+     "dt": "‘5+ Million People started their weight loss journey with us’",
+     "dd": "<a href=\"https://www.formula.care/\" target=\"_blank\" rel=\"noopener\">formula.care</a>, the banner under the features, laurels included."
+    },
+    {
+     "dt": "‘I love being able to track my calories…’ · Drama Mama",
+     "dd": "The first review on <a href=\"https://www.formula.care/\" target=\"_blank\" rel=\"noopener\">formula.care</a>, shortened to its first two sentences. The Spanish version is our translation."
+    },
+    {
+     "dt": "Not used",
+     "dd": "‘Trusted by over 185,224 customers’, ‘We’ve helped 116,513 women…’ and the keto quotes. Those belong to the Keto Diet App recording, not to Formula."
+    }
+   ]
+  },
+  {
+   "group": "Features and copy",
+   "items": [
+    {
+     "dt": "Welcome",
+     "dd": "The hero of <a href=\"https://www.formula.care/\" target=\"_blank\" rel=\"noopener\">formula.care</a>: headline, line and GET STARTED."
+    },
+    {
+     "dt": "‘Which diet plan are you interested in?’",
+     "dd": "The first question of <a href=\"https://quiz.formula.care\" target=\"_blank\" rel=\"noopener\">your web quiz</a> (Mediterranean, Carnivore, Anti-inflammatory). Cortisol Detox is from your App Store description."
+    },
+    {
+     "dt": "Focus lines per diet",
+     "dd": "Your App Store description: tracking protein and fat (Carnivore), balancing macros (Mediterranean), reducing inflammation (Anti-inflammatory), supporting stress balance (Cortisol Detox)."
+    },
+    {
+     "dt": "Premium features on the paywall",
+     "dd": "Your App Store description: Premium gives ‘voice input, free typing input, barcode scanning, live support, full recipe and insights library’; ‘live assistance from professional diet coaches’."
+    },
+    {
+     "dt": "1000+ recipes",
+     "dd": "Your App Store screenshot ‘Get 1000+ recipes’. Recipe tiles are from formula.care."
+    },
+    {
+     "dt": "Target weight, loader labels, ‘Based on your answers,’, GET MY PLAN, ‘Halfway there!…’, the habit questions",
+     "dd": "A public recording of your Keto Diet App onboarding: same team, same components, same prices. The timings in ideas 1–2 (about 80 seconds to the first plan, close to four minutes to the paywall) come from it."
+    },
+    {
+     "dt": "Goal date and pace",
+     "dd": "Illustrative: 1.5 lb a week from 28 October 2026. Your app computes the real projection."
+    },
+    {
+     "dt": "Spanish",
+     "dd": "Our translation, not yours."
+    }
+   ]
+  },
+  {
+   "group": "Design",
+   "items": [
+    {
+     "dt": "Colours",
+     "dd": "Sampled from the recorded screens and Formula’s App Store art: coral #f53d61 (selection, buttons), the #fb5579 → #fd9651 pay button, green #01c17e for results, gold #fdba4a stars, mint #aefef3 and cream #fbf1e8 from your screenshots."
+    },
+    {
+     "dt": "Type",
+     "dd": "Inter. formula.care uses Inter Variable; the app looks like the iOS system font, which Inter stands in for here."
+    },
+    {
+     "dt": "Art",
+     "dd": "Welcome plate from App Store screenshot 1 (cropped, Apple Health badge left out); recipe tiles and laurels from formula.care; the kitchen photo on ‘today’ cut from the recording."
+    }
+   ]
+  },
+  {
+   "group": "What we couldn’t see",
+   "items": [
+    {
+     "dt": "Formula’s own onboarding and paywall",
+     "dd": "Not in any public recording, so we read your Keto Diet App’s instead. If Formula’s differs, tell us and we’ll adjust."
+    },
+    {
+     "dt": "Intro offer and trial",
+     "dd": "Whether Formula runs the 1-year intro price the Keto Diet App shows. The proposed paywall uses listed prices only. No trial is listed; in Health & Fitness a trial usually helps, worth testing once you pick a length."
+    },
+    {
+     "dt": "What closing the paywall does",
+     "dd": "We assumed it lands on the dashboard, as the recording suggests."
+    },
+    {
+     "dt": "Your test history",
+     "dd": "If you’ve run any of these, tell us and we’ll go deeper on the rest."
+    }
+   ]
+  }
+ ]
+}
+</script>
+
+<script>
+/* Formula hooks: units per language (lb in English, kg in Spanish/Mexico), the goal date, the diet's recipe + focus line,
+   the loader bars, and the 3-month offer line. Date and pace are illustrative (1.5 lb a week from 28 Oct 2026). */
+var F_IMG = {med: 'assets/crop/recipe-med.png', carni: 'assets/crop/recipe-carni.png', anti: 'assets/crop/recipe-anti.png', cort: 'assets/crop/recipe-cortisol.png'};
+var F_FOCUS = {
+  en: {med: 'Balancing macros', carni: 'Tracking protein and fat', anti: 'Reducing inflammation with anti-inflammatory meals', cort: 'Supporting stress balance'},
+  es: {med: 'Equilibrar tus macros', carni: 'Registrar proteína y grasa', anti: 'Reducir la inflamación con comidas antiinflamatorias', cort: 'Apoyar el equilibrio del estrés'}
+};
+var F_MON = {
+  en: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+  es: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+};
+var F_SHORT = {en: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], es: ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic']};
+var F_START = Date.UTC(2026, 9, 28), F_PACE = 1.5;   /* lb a week — illustrative */
+function fKg(lb){ return Math.round(lb * 0.45359237); }
+function fW(lb, l){ return l === 'es' ? fKg(lb) + ' kg' : lb + ' lb'; }
+function fWeeks(S){ return (S.w - S.t) / F_PACE; }
+function fDate(S, l){
+  var d = new Date(F_START + Math.round(fWeeks(S) * 7) * 864e5), m = d.getUTCMonth();
+  return l === 'es' ? d.getUTCDate() + ' de ' + F_MON.es[m] : d.getUTCDate() + ' ' + F_MON.en[m];
+}
+function fAll(sel, f){ document.querySelectorAll(sel).forEach(f); }
+window.onSync = function(S){
+  var l = S.lang === 'es' ? 'es' : 'en', es = l === 'es';
+  var dt = fDate(S, l), d = new Date(F_START + Math.round(fWeeks(S) * 7) * 864e5);
+  fAll('.s-tw', function(e){ e.textContent = es ? fKg(S.t) : S.t; });
+  fAll('.s-un', function(e){ e.textContent = es ? 'kg' : 'lb'; });
+  fAll('.s-u-lb', function(e){ e.classList.toggle('on', !es); });
+  fAll('.s-u-kg', function(e){ e.classList.toggle('on', es); });
+  var c = es ? fKg(S.t) : S.t, st = es ? 5 : 10;
+  fAll('.s-r1', function(e){ e.textContent = c - st; }); fAll('.s-r2', function(e){ e.textContent = c; }); fAll('.s-r3', function(e){ e.textContent = c + st; });
+  fAll('.s-pct', function(e){ e.textContent = Math.round((S.w - S.t) / S.w * 100); });
+  fAll('.s-tw2', function(e){ e.textContent = fW(S.t, l); });
+  fAll('.s-cw', function(e){ e.textContent = fW(S.w, l); });
+  fAll('.s-gl', function(e){ e.textContent = (es ? 'Meta ' : 'Goal ') + fW(S.t, l); });
+  fAll('.s-gl2', function(e){ e.textContent = fW(S.t, l); });
+  fAll('.s-dl', function(e){ e.textContent = es ? (fKg(S.w) - fKg(S.t)) + ' kg' : (S.w - S.t) + ' lb'; });
+  fAll('.s-date', function(e){ e.textContent = dt; });
+  fAll('.s-now', function(e){ e.textContent = es ? 'Hoy' : 'Now'; });
+  fAll('.s-mo', function(e){ e.textContent = F_SHORT[l][d.getUTCMonth()]; });
+  fAll('.s-focus', function(e){ e.textContent = F_FOCUS[l][S.diet] || ''; });
+  fAll('.s-rimg', function(e){ e.src = F_IMG[S.diet] || F_IMG.med; });
+  /* the offer only promises the goal date when three months really reach it */
+  var fits = fWeeks(S) <= 13;
+  fAll('[data-t="of_p"]', function(e){
+    e.innerHTML = fits
+      ? (es ? 'Tres meses de Premium te llevan a tu fecha meta, el <em>' + dt + '</em>.' : 'Three months of Premium takes you to your goal date, <em>' + dt + '</em>.')
+      : (es ? 'Tres meses de Premium te dejan bien encaminado hacia el <em>' + dt + '</em>.' : 'Three months of Premium gets you well on the way to <em>' + dt + '</em>.');
+  });
+  /* loader: S.load = number of finished bars (0–4) */
+  var n = +S.load || 0;
+  for (var i = 1; i <= 4; i++) {
+    fAll('.s-b' + i, function(e){ e.classList.toggle('on', i <= n); var b = e.querySelector('i b'); b.style.width = i <= n ? '100%' : (i === n + 1 ? '35%' : '0'); });
+    fAll('.s-p' + i, function(e){ e.textContent = i <= n ? '100%' : (i === n + 1 ? '35%' : '0%'); });
+  }
+  fAll('.s-ldgo', function(e){ e.style.visibility = n >= 4 ? 'visible' : 'hidden'; });
+};
+var F_TIMERS = [];
+window.onEnter = function(id, S){
+  F_TIMERS.forEach(clearTimeout); F_TIMERS = [];
+  if (id !== 'loader') return;
+  if (SHOT || HERO || /[?&]tour\b/.test(location.search)) { S.load = '4'; sync(); return; }
+  S.load = '0'; sync();
+  [1, 2, 3, 4].forEach(function(k){ F_TIMERS.push(setTimeout(function(){ S.load = String(k); sync(); }, 650 * k)); });
+};
+document.addEventListener('click', function(e){
+  var b = e.target.closest('.s-minus,.s-plus'); if (!b) return;
+  S.t = Math.max(150, Math.min(176, S.t + (b.classList.contains('s-plus') ? 2 : -2))); sync();
+});
+</script>
+<script>
+/* ============ engine — generic, do not fork per app ============ */
+var C = JSON.parse(document.getElementById('content').textContent);
+var S = C.state, scr = {}, ORDER = [], hist = [], cur = null, Q = location.search;
+var SHOT = /[?&](shot|phone|tour)\b/.test(Q), HERO = /[?&]hero\b/.test(Q);
+/* a screen with data-aside (e.g. the paywall TODAY for the side-by-side) renders for stills but is not part of the flow */
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id] = s; if (!s.hasAttribute('data-aside')) ORDER.push(s.dataset.id); });
+if (/[?&]shot\b/.test(Q)) document.documentElement.classList.add('shot');
+if (/[?&]phone\b/.test(Q)) document.documentElement.classList.add('shot', 'phoneonly');
+if (/[?&]clear\b/.test(Q)) document.documentElement.classList.add('clear');
+var IDEAS = (C.ideas || []).length;
+
+/* ---- languages: markup is the first language; C.i18n[lang][data-t key] the others; {tokens} from C.prices[lang] ---- */
+var LANGS = C.langs || [], BASE = LANGS.length ? LANGS[0].code : 'en', LANG_DONE = BASE, BASE_LABELS = JSON.parse(JSON.stringify(C.labels || {}));
+if (!S.lang) S.lang = BASE;
+function fillP(s, l){ var P = (C.prices || {})[l] || {}; return String(s).replace(/\{(\w+)\}/g, function(m, k){ return k in P ? P[k] : m; }); }
+function applyLang(){
+  var l = S.lang || BASE; if (l === LANG_DONE) return;
+  var T = (C.i18n || {})[l] || {};
+  document.querySelectorAll('.phone [data-t]').forEach(function(el){
+    if (el._base == null) el._base = el.innerHTML;
+    el.innerHTML = l === BASE || T[el.dataset.t] == null ? el._base : fillP(T[el.dataset.t], l);
+  });
+  C.labels = JSON.parse(JSON.stringify(BASE_LABELS));
+  var LL = (C.labelsI18n || {})[l] || {}; Object.keys(LL).forEach(function(k){ C.labels[k] = LL[k]; });
+  LANG_DONE = l;
+}
+function setLang(l){
+  if (!LANGS.some(function(x){ return x.code === l; })) return;
+  S.lang = l; sync();
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.classList.toggle('on', b.dataset.setlang === l); });
+  if (window.onLang) window.onLang(l);
+}
+
+function lab(key){ var v = S[key]; var L = C.labels[key]; if (Array.isArray(v)) return v.map(function(x){ return L && L[x] || x; }).join(', '); return (L && L[v]) || v; }
+function sync(){
+  applyLang();
+  document.querySelectorAll('[data-bind]').forEach(function(el){
+    var b = el.dataset.bind, m = b.split(':');
+    el.textContent = m[0] === 'label' ? lab(m[1]) : m[0] === 'count' ? (S[m[1]] || []).length : (S[b] == null ? '' : S[b]);
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(el){ var p = el.dataset.pick.split(':'); el.classList.toggle('on', S[p[0]] === p[1]); });
+  document.querySelectorAll('[data-toggle]').forEach(function(el){ var p = el.dataset.toggle.split(':'); el.classList.toggle('on', (S[p[0]] || []).indexOf(p[1]) > -1); });
+  document.querySelectorAll('[data-requires]').forEach(function(el){ el.disabled = !(S[el.dataset.requires] || []).length; });
+  document.querySelectorAll('[data-show]').forEach(function(el){ var p = el.dataset.show.split(':'); el.style.display = String(S[p[0]]) === p[1] ? '' : 'none'; });
+  if (window.onSync) window.onSync(S);
+}
+function show(id, dir){
+  var from = scr[cur], to = scr[id]; if (!to || id === cur) return;
+  var sheet = to.classList.contains('sheet');
+  if (from){
+    from.classList.remove('is-active');
+    if (sheet) from.classList.add('under');                                   /* a sheet slides up over the screen that opened it */
+    else if (dir === 'fwd' && !from.classList.contains('sheet')) from.classList.add('is-past');
+  }
+  if (!sheet) Object.keys(scr).forEach(function(k){ var u = scr[k]; if (u !== to && u.classList.contains('under')) { u.classList.remove('under'); if (dir === 'fwd') u.classList.add('is-past'); } });
+  to.classList.remove('is-past', 'under'); to.classList.add('is-active'); cur = id;
+  paint(); if (window.onEnter) window.onEnter(id, S);
+}
+function go(id){ if (cur) hist.push(cur); show(id, 'fwd'); }
+function back(){ if (hist.length) { var p = hist.pop(); scr[cur].classList.remove('is-active'); show(p, 'back'); } }
+function jump(id){
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active', 'is-past', 'under'); });
+  var i = ORDER.indexOf(id); hist = ORDER.slice(0, i < 0 ? 0 : i); cur = null;
+  ORDER.slice(0, i).forEach(function(k){ if (!scr[k].classList.contains('sheet')) scr[k].classList.add('is-past'); });
+  if (scr[id] && scr[id].classList.contains('sheet')) {                        /* jumping to a sheet: its opener stays visible under it */
+    for (var j = i - 1; j >= 0; j--) if (!scr[ORDER[j]].classList.contains('sheet')) { scr[ORDER[j]].classList.remove('is-past'); scr[ORDER[j]].classList.add('under'); break; }
+  }
+  show(id, 'jump');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+}
+function stepBy(d){ var i = ORDER.indexOf(cur) + d; if (i >= 0 && i < ORDER.length) jump(ORDER[i]); }
+function jumpTo(id){
+  var p = document.getElementById('prototype');
+  if (p && !document.documentElement.classList.contains('appmode')) p.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  jump(id);
+}
+function paint(){
+  sync();
+  var c = document.getElementById('chips');
+  if (!c.childElementCount) ORDER.forEach(function(id){
+    var p = C.panel[id] || {}, b = document.createElement('button');
+    b.className = 'au-chip'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'tab');
+    b.innerHTML = (p.idea ? '<i>' + p.idea + '</i>' : '') + ((C.chips && C.chips[id]) || id);
+    b.onclick = function(){ jump(id); };
+    c.appendChild(b);
+  });
+  c.querySelectorAll('.au-chip').forEach(function(b){ var on = b.dataset.id === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var d = C.panel[cur] || {t: cur, why: ''}, n = ORDER.indexOf(cur) + 1;
+  document.getElementById('panel').innerHTML =
+    (d.idea ? '<div class="au-pn-k"><i></i>Idea ' + d.idea + ' of ' + IDEAS + '</div>' : '<div class="au-pn-k au-ctx"><i></i>Context</div>') +
+    '<h3 class="au-pn-t">' + d.t + '</h3><p class="au-pn-h">' + d.why + '</p>' +
+    (d.iv ? '<div class="au-pn-o"><div class="au-lab">Potential outcome · based on Adapty data</div><div class="au-val"><mark>' + d.iv + '</mark></div><div class="au-sub">' + (d.il || '') + '</div></div>' : '') +
+    (d.also ? '<p class="au-pn-a">' + d.also + '</p>' : '') +
+    '<div class="au-pn-nav"><button type="button" onclick="stepBy(-1)"' + (n <= 1 ? ' disabled' : '') + '>‹ Previous</button><span>Screen ' + n + ' of ' + ORDER.length + '</span><button type="button" onclick="stepBy(1)"' + (n === ORDER.length ? ' disabled' : '') + '>Next ›</button></div>';
+  var ab = document.getElementById('abT'); if (ab) ab.textContent = (d.idea ? 'Idea ' + d.idea + ' of ' + IDEAS + ' · ' : '') + (d.t || '');
+}
+document.addEventListener('click', function(e){
+  var j = e.target.closest('[data-jumpto]'); if (j){ e.preventDefault(); jumpTo(j.dataset.jumpto); return; }
+  var L = e.target.closest('[data-setlang]'); if (L){ setLang(L.dataset.setlang); return; }
+  if (e.target.closest('[data-langtoggle]') && LANGS.length > 1){ var k = LANGS.findIndex(function(x){ return x.code === S.lang; }); setLang(LANGS[(k + 1) % LANGS.length].code); return; }
+  var el = e.target.closest('[data-go],[data-back],[data-pick],[data-toggle]'); if (!el) return;
+  if (el.dataset.pick){ var p = el.dataset.pick.split(':'); S[p[0]] = p[1]; sync(); if (el.dataset.advance) setTimeout(function(){ go(el.dataset.advance); }, 170); return; }
+  if (el.dataset.toggle){ var q = el.dataset.toggle.split(':'), a = S[q[0]] = S[q[0]] || [], i = a.indexOf(q[1]); if (i > -1) a.splice(i, 1); else a.push(q[1]); sync(); return; }
+  if ('back' in el.dataset) return back();
+  go(el.dataset.go);
+});
+document.querySelectorAll('[data-input]').forEach(function(inp){
+  inp.value = S[inp.dataset.input] || ''; inp.addEventListener('input', function(){ S[inp.dataset.input] = inp.value.trim() || 'there'; sync(); });
+});
+function $(id){ return document.getElementById(id); }
+
+/* hero stills, shortlist, outcome, sources — from CONTENT */
+$('heroPhones').innerHTML = (C.hero || []).map(function(id, i){
+  var pos = ['l', 'c', 'r'][i] || 'r', t = (C.chips && C.chips[id]) || id;
+  return '<button class="au-hp au-' + pos + '" data-jumpto="' + id + '" aria-label="Open ' + t + '"><img src="assets/hero/' + id + '.png" alt=""></button>';
+}).join('');
+$('ideaList').innerHTML = (C.ideas || []).map(function(r, i){
+  return '<article class="au-idea"><div class="au-num">0' + (i + 1) + '</div><div><h3>' + r.title + '</h3><p>' + r.what + '</p>' +
+    '<button type="button" class="au-lnk" data-jumpto="' + r.screen + '">See it on the screen</button></div>' +
+    '<div class="au-imp"><div class="au-v"><mark>' + r.impact + '</mark></div><div class="au-l">' + r.il + '</div></div></article>';
+}).join('');
+var O = C.outcome || {};
+$('bandNums').innerHTML =
+  (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') +
+  (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '');
+$('bandFn').textContent = C.grounding;
+$('fine').textContent = C.grounding + ' Prepared by Adapty.';
+$('srcBody').innerHTML = C.sources.map(function(g){
+  return '<div><h4>' + g.group + '</h4><dl>' + g.items.map(function(it){ return '<dt>' + it.dt + '</dt><dd>' + it.dd + '</dd>'; }).join('') + '</dl></div>';
+}).join('');
+function openSrc(){ var d = $('srcDetails'); d.open = true; d.scrollIntoView({block: 'start'}); }
+
+/* ---- extras: language control, the paywall side by side, QR / phone view, the video ---- */
+if (LANGS.length > 1) {
+  $('langRow').hidden = false;
+  var lb = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.name + '</button>'; }).join('');
+  $('langSw').innerHTML = lb;
+  $('abLang').innerHTML = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.code.toUpperCase() + '</button>'; }).join('');
+}
+var CM = C.compare;
+if (CM && scr[CM.today] && scr[CM.proposed]) {
+  $('compare').hidden = false; $('navCompare').hidden = false;
+  $('cmpBody').innerHTML = '<div class="au-ideas-h"><p class="au-kicker">' + (CM.kicker || 'The paywall, side by side') + '</p><h2 class="au-h2">' + (CM.title || 'Today and proposed.') + (CM.sub ? ' <span>' + CM.sub + '</span>' : '') + '</h2></div>' +
+    '<div class="au-cmp"><figure><img src="assets/hero/' + CM.today + '.png" alt="Your paywall today"><figcaption>Today <span>· ' + (CM.todayCap || 'rebuilt from your recording') + '</span></figcaption></figure>' +
+    '<ol class="au-chg">' + (CM.rows || []).map(function(r){
+      return '<li><h4>' + r.h + (r.idea ? ' <i>Idea ' + r.idea + '</i>' : '') + '</h4><span class="au-was"><em>Today</em>' + r.was + '</span><span class="au-now"><em>Proposed</em>' + r.now + '</span></li>';
+    }).join('') + '</ol>' +
+    '<figure><button type="button" class="au-cmp-go" data-jumpto="' + CM.proposed + '" aria-label="Open the proposed paywall"><img src="assets/hero/' + CM.proposed + '.png" alt="The proposed paywall"></button><figcaption>Proposed <span>· tap to try it</span></figcaption></figure></div>' +
+    (CM.kept ? '<p class="au-kept">' + CM.kept + '</p>' : '');
+}
+if (C.liveUrl) { $('qrCard').hidden = false; $('qrMob').hidden = false; }
+if (/[?&]app\b/.test(Q)) {
+  var H0 = document.documentElement; H0.classList.add('appmode');
+  var openP = function(o){ H0.classList.toggle('au-open', o); $('abWhy').querySelector('em').textContent = o ? 'Close ↓' : 'Why ↑'; };
+  $('abWhy').onclick = function(){ openP(!H0.classList.contains('au-open')); };
+  $('abScrim').onclick = function(){ openP(false); };
+}
+if (C.video) {
+  var dlg = $('vid'), vel = $('vidEl'); vel.src = C.video; if (C.poster) vel.poster = C.poster; $('vidDl').href = C.video;
+  $('heroVideo').hidden = false;
+  $('heroVideo').onclick = function(){ dlg.showModal(); vel.play().catch(function(){}); };
+  $('vidX').onclick = function(){ dlg.close(); };
+  dlg.addEventListener('close', function(){ vel.pause(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+}
+
+/* ---- ?tour: a deterministic walkthrough from C.tour — tourAt(ms) paints one frame; record-video.sh records it ---- */
+function tourInit(){
+  var T = C.tour, H = document.documentElement, TR = T.transition || 360;
+  H.classList.add('tourmode', 'shot'); document.body.classList.add('nofx');
+  var SEG = T.segments, START = [], STATE = [], UNDER = [], acc = 0, st = JSON.parse(JSON.stringify(C.state));
+  SEG.forEach(function(s, i){
+    START.push(acc); acc += s.d;
+    Object.keys(s.st || {}).forEach(function(k){ st[k] = s.st[k]; }); STATE.push(JSON.parse(JSON.stringify(st)));
+    var u = null; if (scr[s.id].classList.contains('sheet')) for (var j = i - 1; j >= 0; j--) if (!scr[SEG[j].id].classList.contains('sheet')) { u = SEG[j].id; break; }
+    UNDER.push(u);
+  });
+  var TOTAL = acc, capEl = $('tCap'), tap = $('tTap'), pressed = null, popped = [];
+  $('tIntro').innerHTML = '<p class="au-eyebrow"><i></i>' + document.querySelector('.au-top-hero .au-eyebrow').textContent + '</p><h1 class="au-display">' + C.app + '</h1>' +
+    '<p class="au-lede">' + (T.introLede || document.querySelector('.au-top-hero .au-lede').innerHTML) + '</p>';
+  $('tEnd').innerHTML = '<p class="au-eyebrow"><i></i>Growth Audit · ' + C.app + '</p><h2 class="au-te-h">' + (T.endTitle || 'Five ideas, built into your own onboarding.') + '</h2>' +
+    '<div class="au-te-n">' + (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') + (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '') + '</div>' +
+    (C.liveUrl ? '<div class="au-te-q"><img src="assets/qr-app.png" alt=""><div><b>Try it on your phone</b><span>' + C.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') + '</span></div></div>' : '') +
+    '<p class="au-te-f">' + C.grounding + '</p>';
+  function ease(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function easeBack(x){ var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function capHTML(c){
+    c = c || {k: '', t: '', l: ''};
+    return '<div class="au-tk' + (c.n ? '' : ' au-ctx') + '"><i></i>' + (c.n ? 'Idea ' + c.n + ' of ' + IDEAS : (c.k || 'Context')) + '</div><h2 class="au-tt">' + c.t + '</h2><p class="au-tl">' + (c.l || '') + '</p>' +
+      (c.o ? '<div class="au-to"><small>Potential outcome · based on Adapty data</small><b><mark>' + c.o + '</mark></b><span>' + (c.ol || '') + '</span></div>' : '');
+  }
+  function place(id, tf, z){ scr[id].style.transform = tf; scr[id].style.zIndex = z; }
+  window.TOUR_MS = TOTAL;
+  window.tourAt = function(ms){
+    ms = Math.max(0, Math.min(TOTAL - 1, ms));
+    var i = 0; while (i < SEG.length - 1 && ms >= START[i + 1]) i++;
+    var s = SEG[i], local = ms - START[i], prev = i > 0 ? SEG[i - 1] : null;
+    Object.keys(STATE[i]).forEach(function(k){ S[k] = STATE[i][k]; }); sync();
+    var moving = prev && prev.id !== s.id && local < TR, p = moving ? ease(local / TR) : 1;
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('is-active', 'is-past', 'under'); place(k, 'translateX(100%)', 0); });
+    var B = scr[s.id];
+    if (moving) {
+      if (B.classList.contains('sheet')) { place(prev.id, 'none', 1); B.style.transform = 'translateY(' + (1 - p) * 100 + '%)'; }
+      else {
+        var slide = 'translateX(' + (-28 * p) + '%)'; place(prev.id, slide, 1); B.style.transform = 'translateX(' + (1 - p) * 100 + '%)';
+        if (UNDER[i - 1]) place(UNDER[i - 1], slide, 0);
+      }
+    } else B.style.transform = 'none';
+    B.style.zIndex = 2;
+    if (UNDER[i] && !moving) place(UNDER[i], 'none', 1);
+    /* optional reveal: s.pop scales an element in, s.reveal fades one in a beat later */
+    popped.forEach(function(e){ e.style.transform = ''; e.style.opacity = ''; }); popped = [];
+    var q = Math.max(0, Math.min(1, (local - 250) / 550));
+    if (s.pop) { var pe = B.querySelector(s.pop); if (pe) { pe.style.transform = 'scale(' + (.55 + .45 * easeBack(q)) + ')'; pe.style.opacity = Math.min(1, q * 1.6); popped.push(pe); } }
+    if (s.reveal) { var re = B.querySelector(s.reveal); if (re) { re.style.opacity = Math.max(0, Math.min(1, (local - 520) / 300)); popped.push(re); } }
+    /* caption crossfades at screen changes; waits for the intro, gives way to the end card */
+    var key = s.id, op = 1;
+    if (moving) { if (p < .5) { key = prev.id; op = 1 - p * 2; } else op = p * 2 - 1; }
+    if (capEl.dataset.k !== key) { capEl.innerHTML = capHTML(T.captions[key]); capEl.dataset.k = key; }
+    var io = ms < 1100 ? 1 : Math.max(0, 1 - (ms - 1100) / 300), eo = s.end ? Math.min(1, local / 350) : 0;
+    capEl.style.opacity = op * Math.max(0, Math.min(1, (ms - 1400) / 300)) * (1 - eo);
+    /* the finger: fades in, taps, ripples out. Selectors are scoped to the screen */
+    tap.style.opacity = 0; if (pressed) { pressed.style.opacity = ''; pressed = null; }
+    if (s.tap) {
+      var el = B.querySelector(s.tap[0]), dt = local - s.tap[1];
+      if (el && dt > -260 && dt < 420) {
+        var r = el.getBoundingClientRect();
+        tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+        if (dt < 0) { tap.style.opacity = (dt + 260) / 260 * .9; tap.style.transform = 'scale(1)'; }
+        else { tap.style.opacity = .9 * (1 - dt / 420); tap.style.transform = 'scale(' + (1 + dt / 420 * .9) + ')'; }
+        if (dt >= 0 && dt < 160) { el.style.opacity = .72; pressed = el; }
+      }
+    }
+    $('tIntro').style.opacity = T.intro === false ? 0 : io;
+    $('tEnd').style.opacity = eo;
+    $('tProg').style.width = (ms / TOTAL * 100) + '%';
+    cur = s.id;
+    return i;
+  };
+  var tm = /[?&]t=(\d+)/.exec(Q); tourAt(tm ? +tm[1] : 0);
+}
+
+/* boot: #<screen-id> deep-links a screen (shoot.sh / hero-stills.sh use it); ?lang=xx picks the language */
+(function(){
+  var lm = /[?&]lang=(\w+)/.exec(Q); if (lm) setLang(lm[1]); else setLang(S.lang);
+  var h = location.hash.slice(1);
+  jump(scr[h] ? h : ORDER[0]);
+  if (scr[h] && !SHOT && !document.documentElement.classList.contains('appmode')) setTimeout(function(){ $('prototype').scrollIntoView(); }, 0);
+  if (/[?&]tour\b/.test(Q) && C.tour) tourInit();
+})();
+</script>
+</body>
+</html>
